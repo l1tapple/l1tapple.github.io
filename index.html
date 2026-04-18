@@ -1,21 +1,23 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>水墨福猪 · 黄道吉日</title>
+    <title>福运小猪 · 黄道萌宠</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;600;700&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             user-select: none;
-            font-family: 'Ma Shan Zheng', 'STKaiti', 'KaiTi', 'Microsoft YaHei', serif;
+            font-family: 'Noto Serif SC', 'Microsoft YaHei', serif;
         }
 
         body {
             min-height: 100vh;
-            background: #1a2e1f; /* 水墨深绿底 */
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -28,24 +30,29 @@
             max-width: 450px;
             height: 900px;
             max-height: 95vh;
-            background: radial-gradient(circle at 30% 20%, #1e3a2a, #0c1e12);
-            border-radius: 48px 48px 32px 32px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.7), inset 0 0 0 2px rgba(180,160,120,0.3);
+            background: 
+                radial-gradient(ellipse at 30% 20%, rgba(139, 90, 43, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(160, 82, 45, 0.1) 0%, transparent 50%),
+                linear-gradient(180deg, #f5f0e8 0%, #e8e0d0 100%);
+            border-radius: 24px;
+            box-shadow: 
+                0 25px 50px rgba(0,0,0,0.4),
+                inset 0 0 0 2px rgba(139, 90, 43, 0.3),
+                inset 0 0 60px rgba(139, 90, 43, 0.05);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            color: #efe6d2;
-            border: 1px solid #6a5e45;
+            color: #3d2914;
         }
 
-        /* 水墨纹理叠加 (伪) */
-        #app::after {
-            content: "";
+        #app::before {
+            content: '';
             position: absolute;
-            top:0;left:0;width:100%;height:100%;
-            background: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="1"/></filter><rect width="100" height="100" filter="url(%23noise)" opacity="0.08"/></svg>');
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
             pointer-events: none;
-            z-index: 5;
+            z-index: 1;
         }
 
         #bubble-layer {
@@ -55,21 +62,21 @@
             z-index: 30;
         }
 
-        .bubble-nose {
+        .bubble-pig {
             position: absolute;
-            bottom: -50px;
-            font-size: 30px;
-            opacity: 0.5;
-            filter: drop-shadow(0 0 8px #b8a88c);
+            bottom: -80px;
+            opacity: 0.85;
+            filter: drop-shadow(0 4px 8px rgba(139, 90, 43, 0.3));
             animation: floatUp linear forwards;
             pointer-events: none;
-            color: #d9b8a4;
-            text-shadow: 2px 2px 3px #3a2a1e;
         }
 
         @keyframes floatUp {
-            0% { transform: translateY(0) scale(0.7); opacity: 0.3; }
-            100% { transform: translateY(-120vh) scale(1.3); opacity: 0; }
+            0% { transform: translateY(0) rotate(-5deg) scale(0.7); opacity: 0.8; }
+            25% { transform: translateY(-30vh) rotate(5deg) scale(0.9); opacity: 0.9; }
+            50% { transform: translateY(-60vh) rotate(-3deg) scale(1); opacity: 0.85; }
+            75% { transform: translateY(-90vh) rotate(3deg) scale(1.05); opacity: 0.6; }
+            100% { transform: translateY(-130vh) rotate(0deg) scale(1.1); opacity: 0; }
         }
 
         #main-interface {
@@ -78,10 +85,9 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            padding: 18px 16px 12px;
-            backdrop-filter: blur(2px);
+            padding: 20px 18px 14px;
             opacity: 0;
-            transition: opacity 1.2s ease;
+            transition: opacity 1.5s ease;
             pointer-events: none;
         }
 
@@ -92,86 +98,138 @@
 
         .exit-btn {
             position: absolute;
-            top: 18px; right: 18px;
+            top: 16px; right: 16px;
             width: 44px; height: 44px;
-            background: rgba(70, 40, 20, 0.6);
-            backdrop-filter: blur(8px);
-            border-radius: 30px;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(180, 60, 60, 0.9), rgba(139, 35, 35, 0.95));
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            font-weight: 300;
-            color: #ecdcc0;
-            border: 2px solid #b89b7a;
-            box-shadow: 0 4px 10px #1e160e;
+            font-size: 24px;
+            font-weight: bold;
+            color: #f5e6d3;
+            border: 2px solid #8b3a3a;
+            box-shadow: 
+                0 4px 12px rgba(139, 35, 35, 0.4),
+                inset 0 2px 4px rgba(255,255,255,0.2);
             cursor: pointer;
             z-index: 50;
-            transition: 0.2s;
-            font-family: 'KaiTi';
+            transition: all 0.3s ease;
         }
-        .exit-btn:hover { background: #5e3e28; color: #fff3e0; }
+        .exit-btn:hover { 
+            background: radial-gradient(circle at 30% 30%, rgba(200, 70, 70, 0.95), rgba(160, 45, 45, 1));
+            transform: scale(1.05);
+        }
+        .exit-btn:active { transform: scale(0.95); }
 
         .header-section {
             text-align: center;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
+            padding: 12px 16px;
+            background: 
+                linear-gradient(135deg, rgba(139, 90, 43, 0.08) 0%, rgba(160, 82, 45, 0.05) 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(139, 90, 43, 0.2);
+            position: relative;
         }
+        .header-section::before,
+        .header-section::after {
+            content: '❖';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(139, 90, 43, 0.3);
+            font-size: 12px;
+        }
+        .header-section::before { left: 12px; }
+        .header-section::after { right: 12px; }
+
         .auspicious-day {
+            font-family: 'Ma Shan Zheng', cursive;
             font-size: 28px;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px #1f2c1a;
+            font-weight: 400;
+            color: #5d3a1a;
             letter-spacing: 6px;
-            background: linear-gradient(135deg, #efe0c1, #c9af7c);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 4px;
+            text-shadow: 1px 1px 2px rgba(139, 90, 43, 0.2);
+            margin-bottom: 8px;
         }
+        
         .weather-panel {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            background: rgba(30, 45, 30, 0.6);
-            backdrop-filter: blur(8px);
-            padding: 8px 18px;
-            border-radius: 60px;
-            border: 1.5px solid #b6a07e;
-            font-size: 15px;
-            color: #efe3cd;
+            justify-content: center;
+            gap: 20px;
+            padding: 10px 16px;
+            font-size: 14px;
+            color: #6b4423;
+        }
+        .weather-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .fortune-area {
             display: flex;
             justify-content: center;
-            margin: 8px 0 10px;
+            margin: 10px 0 12px;
         }
         .fortune-btn {
-            background: rgba(150, 130, 90, 0.25);
-            backdrop-filter: blur(12px);
-            border: 2.5px solid #cdbb9a;
-            border-radius: 60px;
-            padding: 14px 36px;
+            background: 
+                linear-gradient(135deg, rgba(139, 90, 43, 0.15) 0%, rgba(160, 82, 45, 0.1) 100%);
+            border: 2px solid #8b5a2b;
+            border-radius: 50px;
+            padding: 14px 40px;
+            font-family: 'Ma Shan Zheng', cursive;
             font-size: 26px;
-            font-weight: bold;
-            color: #f5ebdb;
-            box-shadow: 0 6px 16px #0f1a0b;
+            color: #5d3a1a;
+            box-shadow: 
+                0 6px 16px rgba(139, 90, 43, 0.2),
+                inset 0 1px 2px rgba(255,255,255,0.5);
             cursor: pointer;
-            transition: 0.3s;
-            letter-spacing: 10px;
-            text-shadow: 1px 1px 2px #1f2a12;
+            transition: all 0.3s ease;
+            letter-spacing: 12px;
+            position: relative;
+            overflow: hidden;
         }
-        .fortune-btn:active { transform: scale(0.96); background: #7f6e4e55; }
+        .fortune-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        .fortune-btn:hover::before { left: 100%; }
+        .fortune-btn:active { 
+            transform: scale(0.96); 
+            background: rgba(139, 90, 43, 0.25);
+        }
 
         .pet-section {
             flex: 1;
             display: flex;
             flex-direction: column;
-            background: rgba(30, 45, 25, 0.35);
-            backdrop-filter: blur(4px);
-            border-radius: 48px 48px 32px 32px;
-            padding: 16px 10px 10px;
-            border: 1.5px solid #a3916b;
-            margin-top: 6px;
+            background: 
+                radial-gradient(ellipse at 50% 30%, rgba(245, 240, 230, 0.8) 0%, rgba(232, 224, 208, 0.6) 100%);
+            border-radius: 32px;
+            padding: 20px 14px 14px;
+            border: 2px solid rgba(139, 90, 43, 0.25);
+            box-shadow: 
+                inset 0 2px 8px rgba(139, 90, 43, 0.1),
+                0 8px 24px rgba(0,0,0,0.1);
+            margin-top: 8px;
+            position: relative;
+        }
+        .pet-section::before {
+            content: '';
+            position: absolute;
+            top: 10px; left: 50%;
+            transform: translateX(-50%);
+            width: 60px; height: 4px;
+            background: rgba(139, 90, 43, 0.2);
+            border-radius: 2px;
         }
 
         .pet-canvas-container {
@@ -179,182 +237,546 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 180px;
+            min-height: 220px;
+            position: relative;
+        }
+
+        .pet-base {
+            position: absolute;
+            bottom: 20px;
+            width: 200px; height: 40px;
+            background: radial-gradient(ellipse at center, rgba(139, 90, 43, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
         }
 
         canvas#petCanvas {
             width: 100%;
-            max-width: 300px;
+            max-width: 320px;
             height: auto;
             aspect-ratio: 1/1;
-            filter: drop-shadow(0 8px 12px #1f2a15);
+            image-rendering: crisp-edges;
+            filter: drop-shadow(0 12px 20px rgba(139, 90, 43, 0.25));
             cursor: pointer;
+            position: relative;
+            z-index: 10;
         }
 
         .happiness-bar-wrap {
-            margin: 8px 12px 4px;
+            margin: 12px 16px 6px;
             height: 14px;
-            background: #2f3f2a;
+            background: 
+                linear-gradient(180deg, #d4c4a8 0%, #c4b498 100%);
             border-radius: 20px;
             overflow: hidden;
-            border: 1.5px solid #ac9a70;
+            border: 2px solid #8b5a2b;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.15);
         }
         #happinessFill {
             width: 80%;
             height: 100%;
-            background: linear-gradient(90deg, #d4b37a, #f3e1b3);
+            background: 
+                linear-gradient(90deg, #c9a227 0%, #daa520 30%, #ffd700 50%, #daa520 70%, #c9a227 100%);
             border-radius: 20px;
-            transition: width 0.4s;
-            box-shadow: inset 0 1px 3px #fbf3dd;
+            transition: width 0.5s ease;
+            box-shadow: inset 0 1px 2px rgba(255,255,255,0.4);
+            position: relative;
+        }
+        #happinessFill::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, transparent 50%);
         }
 
         .action-rings {
             display: flex;
             justify-content: space-around;
             align-items: center;
-            margin: 10px 0 6px;
+            margin: 16px 0 8px;
         }
         .ring-item {
-            width: 75px;
-            height: 75px;
-            background: rgba(230, 220, 200, 0.25);
-            backdrop-filter: blur(16px);
+            width: 72px;
+            height: 72px;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(245, 240, 230, 0.95), rgba(232, 224, 208, 0.9));
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 2.5px solid #ddd2b2;
-            box-shadow: 0 4px 12px #1d2818, inset 0 0 10px #efe6cf55;
-            font-size: 38px;
+            border: 3px solid #8b5a2b;
+            box-shadow: 
+                0 6px 16px rgba(139, 90, 43, 0.25),
+                inset 0 2px 4px rgba(255,255,255,0.6);
+            font-size: 32px;
             cursor: pointer;
-            transition: 0.2s;
-            color: #30281c;
+            transition: all 0.25s ease;
+            position: relative;
         }
-        .ring-item:active { transform: scale(0.9); background: #cdbb9a80; }
+        .ring-item::before {
+            content: '';
+            position: absolute;
+            top: 4px; left: 4px; right: 4px; bottom: 4px;
+            border: 1px dashed rgba(139, 90, 43, 0.3);
+            border-radius: 50%;
+        }
+        .ring-item:hover { 
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 24px rgba(139, 90, 43, 0.35);
+        }
+        .ring-item:active { 
+            transform: translateY(0) scale(0.95);
+            background: rgba(139, 90, 43, 0.15);
+        }
+        .ring-item.disabled { 
+            opacity: 0.4; 
+            pointer-events: none; 
+            filter: grayscale(0.6);
+        }
+        .ring-item.sleep-disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
 
         .pet-tip {
-            font-size: 12px; text-align: center; opacity: 0.9;
+            font-size: 13px; 
+            text-align: center; 
+            color: #6b4423;
+            opacity: 0.85;
             margin-top: 6px;
-            color: #dbcfb0;
+            font-family: 'Ma Shan Zheng', cursive;
+            letter-spacing: 2px;
         }
 
         .offline-notice {
             position: fixed;
-            top: 80px;
+            top: 90px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(40, 30, 15, 0.8);
-            backdrop-filter: blur(12px);
-            color: #f5e7cb;
-            padding: 12px 24px;
-            border-radius: 60px;
-            border: 2px solid #c8af7a;
+            background: 
+                linear-gradient(135deg, rgba(93, 58, 26, 0.95), rgba(139, 90, 43, 0.9));
+            color: #f5e6d3;
+            padding: 14px 28px;
+            border-radius: 50px;
+            border: 2px solid #c9a227;
             z-index: 100;
-            font-weight: bold;
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 16px;
+            letter-spacing: 2px;
             opacity: 0;
             transition: opacity 0.5s;
             pointer-events: none;
             white-space: nowrap;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
         }
 
-        /* 运势弹窗——水墨祥云边框不留白 */
+        .sleep-status-tip {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: 
+                linear-gradient(135deg, rgba(93, 58, 26, 0.9), rgba(139, 90, 43, 0.85));
+            color: #f5e6d3;
+            padding: 12px 24px;
+            border-radius: 50px;
+            border: 2px solid #c9a227;
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 16px;
+            letter-spacing: 3px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 50;
+            white-space: nowrap;
+        }
+        .sleep-status-tip.show {
+            opacity: 1;
+        }
+
         .modal-overlay {
             position: fixed; top:0; left:0; width:100%; height:100%;
-            background: #0f1a0e90; backdrop-filter: blur(6px);
+            background: rgba(26, 26, 46, 0.85);
+            backdrop-filter: blur(8px);
             display: flex; align-items: center; justify-content: center;
             z-index: 200;
         }
+        
         .fortune-modal {
-            width: 350px;
-            background: rgba(235, 225, 200, 0.25);
-            backdrop-filter: blur(25px);
-            border: 4px solid transparent;
-            border-image: repeating-linear-gradient(45deg, #f3e9d2, #bdaa82, #efe2c6) 30;
-            border-radius: 60px 60px 50px 50px;
-            padding: 24px 18px 20px;
-            box-shadow: 0 20px 40px #00000077, inset 0 0 40px #fff3db55;
-            color: #202818;
-            text-shadow: 0 1px 2px #eadbba;
-            font-weight: 500;
+            width: 360px;
+            max-height: 85vh;
+            background: 
+                linear-gradient(135deg, #f5f0e8 0%, #ebe5d8 100%);
+            border: 3px solid #8b5a2b;
+            border-radius: 24px;
+            padding: 0;
+            box-shadow: 
+                0 25px 50px rgba(0,0,0,0.4),
+                inset 0 0 0 1px rgba(139, 90, 43, 0.2);
+            color: #3d2914;
+            overflow: hidden;
             position: relative;
+        }
+
+        .fortune-modal::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 80px;
+            background: 
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60'%3E%3Cpath d='M20,40 Q30,20 50,35 T90,30 T130,35 T170,25 T200,40' fill='none' stroke='%238b5a2b' stroke-width='1.5' opacity='0.3'/%3E%3Cpath d='M0,50 Q25,30 50,45 T100,40 T150,45 T200,35' fill='none' stroke='%23a0522d' stroke-width='1' opacity='0.25'/%3E%3C/svg%3E") repeat-x;
+            opacity: 0.6;
+        }
+        .fortune-modal::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0; height: 60px;
+            background: 
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 50'%3E%3Cpath d='M10,20 Q30,35 50,15 T90,25 T130,15 T170,30 T200,20' fill='none' stroke='%238b5a2b' stroke-width='1.5' opacity='0.3'/%3E%3C/svg%3E") repeat-x;
+            opacity: 0.5;
+        }
+
+        .modal-header {
+            background: 
+                linear-gradient(135deg, #8b5a2b 0%, #a0522d 50%, #8b5a2b 100%);
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            border-bottom: 2px solid #c9a227;
+        }
+        .modal-header::before,
+        .modal-header::after {
+            content: '☁';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(245, 230, 211, 0.4);
+            font-size: 24px;
+        }
+        .modal-header::before { left: 30px; }
+        .modal-header::after { right: 30px; }
+
+        .modal-title {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 32px;
+            color: #f5e6d3;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: 8px;
+        }
+
+        .modal-content {
+            padding: 20px 24px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .stat-section {
+            margin-bottom: 16px;
+        }
+        .stat-row { 
+            display: flex; 
+            align-items: center; 
+            margin: 10px 0;
+            padding: 8px 12px;
+            background: rgba(139, 90, 43, 0.05);
+            border-radius: 12px;
+            border-left: 3px solid #c9a227;
+        }
+        .stat-label { 
+            width: 60px; 
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 18px;
+            color: #5d3a1a;
+        }
+        .stat-bar-bg { 
+            flex:1; 
+            height: 14px; 
+            background: #d4c4a8; 
+            border-radius: 20px; 
+            margin: 0 12px;
+            border: 1px solid #b8a080;
             overflow: hidden;
         }
-        /* 祥云背景 (不留白) */
-        .fortune-modal::before {
-            content: "";
-            position: absolute;
-            top:0;left:0;width:100%;height:100%;
-            background: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M20,40 Q30,20 50,30 Q70,10 80,30 Q95,40 80,60 Q70,80 50,70 Q30,85 20,65 Q5,55 20,40" fill="%23dfd2b5" opacity="0.15"/><path d="M70,70 Q85,65 90,80 Q85,95 70,90 Q60,95 65,80 Q55,75 70,70" fill="%23cdbb9a" opacity="0.2"/></svg>');
-            background-size: 120px 120px;
-            background-repeat: repeat;
-            opacity: 0.5;
-            pointer-events: none;
-            z-index: 0;
+        .stat-bar-fill { 
+            height: 100%; 
+            border-radius: 20px; 
+            background: linear-gradient(90deg, #c9a227, #daa520, #ffd700);
+            transition: width 0.8s ease;
+            position: relative;
         }
-        .fortune-modal > * { position: relative; z-index: 2; }
-        .stat-row { display: flex; align-items: center; margin: 12px 0; }
-        .stat-label { width: 70px; font-size: 18px; }
-        .stat-bar-bg { flex:1; height: 14px; background: #4d4632; border-radius: 20px; margin:0 8px; border:1px solid #a58e5f; }
-        .stat-bar-fill { height: 14px; border-radius: 20px; background: #c9aa6b; width: 70%; box-shadow: inset 0 0 6px #ffefc0; }
-        .lucky-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 18px 0; }
-        .close-modal { text-align: center; margin-top: 20px; }
-        .close-modal span { background: #8f7e58; padding: 10px 35px; border-radius: 40px; color: #faf3e0; font-size: 18px; border: 1px solid #cfbc8e; cursor: pointer; }
+        .stat-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, transparent 50%);
+        }
+        .stat-value {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 20px;
+            color: #8b5a2b;
+            min-width: 36px;
+            text-align: right;
+        }
+
+        .lucky-section {
+            background: 
+                linear-gradient(135deg, rgba(201, 162, 39, 0.1) 0%, rgba(218, 165, 32, 0.05) 100%);
+            border: 2px dashed #c9a227;
+            border-radius: 16px;
+            padding: 16px;
+            margin: 16px 0;
+            position: relative;
+        }
+        .lucky-section::before {
+            content: '❖';
+            position: absolute;
+            top: -10px; left: 50%;
+            transform: translateX(-50%);
+            background: #f5f0e8;
+            padding: 0 12px;
+            color: #c9a227;
+            font-size: 14px;
+        }
+
+        .lucky-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 12px; 
+        }
+        .lucky-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #5d3a1a;
+            padding: 8px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 8px;
+            border: 1px solid rgba(139, 90, 43, 0.15);
+        }
+        .lucky-icon {
+            font-size: 20px;
+        }
+
+        .yi-ji-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .yi-box, .ji-box {
+            padding: 14px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .yi-box {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(76, 175, 80, 0.05));
+            border: 2px solid #4caf50;
+        }
+        .ji-box {
+            background: linear-gradient(135deg, rgba(244, 67, 54, 0.1), rgba(244, 67, 54, 0.05));
+            border: 2px solid #f44336;
+        }
+        .yi-ji-title {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+        .yi-box .yi-ji-title { color: #2e7d32; }
+        .ji-box .yi-ji-title { color: #c62828; }
+        .yi-ji-content {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #5d3a1a;
+        }
+
+        .fortune-quote {
+            text-align: center;
+            padding: 16px;
+            margin: 12px 0;
+            background: 
+                linear-gradient(90deg, transparent, rgba(139, 90, 43, 0.08), transparent);
+            border-top: 1px dashed #c9a227;
+            border-bottom: 1px dashed #c9a227;
+        }
+        .quote-text {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 20px;
+            color: #8b5a2b;
+            letter-spacing: 3px;
+            line-height: 1.8;
+        }
+
+        .close-modal { 
+            text-align: center; 
+            margin-top: 16px;
+            padding-bottom: 8px;
+        }
+        .close-modal-btn { 
+            display: inline-block;
+            background: 
+                linear-gradient(135deg, #8b5a2b 0%, #a0522d 100%);
+            padding: 12px 48px; 
+            border-radius: 50px; 
+            color: #f5e6d3;
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 20px;
+            letter-spacing: 8px;
+            cursor: pointer;
+            border: 2px solid #c9a227;
+            box-shadow: 0 4px 12px rgba(139, 90, 43, 0.3);
+            transition: all 0.3s ease;
+        }
+        .close-modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(139, 90, 43, 0.4);
+        }
+
+        .cloud-decoration {
+            position: absolute;
+            font-size: 40px;
+            opacity: 0.15;
+            color: #8b5a2b;
+            pointer-events: none;
+        }
+        .cloud-1 { top: 100px; left: 10px; }
+        .cloud-2 { top: 200px; right: 10px; }
+        .cloud-3 { bottom: 100px; left: 20px; }
 
         .hidden { display: none !important; }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
     </style>
 </head>
 <body>
 <div id="app">
-    <div class="exit-btn" id="exitApp">✕</div>
+    <div class="exit-btn" id="exitApp" title="关闭">✕</div>
     <div id="bubble-layer"></div>
+    <div id="sleepStatusTip" class="sleep-status-tip"></div>
     
-    <div id="offlineNotice" class="offline-notice">🐷 水墨小猪等你归来</div>
+    <div id="offlineNotice" class="offline-notice">🐷 你离开了很久，小猪想你了...</div>
 
     <div id="main-interface">
         <div class="header-section">
             <div class="auspicious-day" id="auspiciousText">乙巳年 三月初九 宜祈福</div>
             <div class="weather-panel">
-                <span>🌤️ 23° 烟雨</span>
-                <span>☀️ 紫外线 弱 · 披件薄衫</span>
+                <div class="weather-item">
+                    <span>🌤️</span>
+                    <span>23°C 多云</span>
+                </div>
+                <div class="weather-item">
+                    <span>☀️</span>
+                    <span>紫外线中等 · 宜防晒</span>
+                </div>
             </div>
-            <div style="font-size:14px; margin-top: 4px;">👘 棉麻长衫 · 防晒纸伞</div>
         </div>
 
         <div class="fortune-area">
-            <div class="fortune-btn" id="fortuneBtn">☯ 运 势 ☯</div>
+            <div class="fortune-btn" id="fortuneBtn">✨ 今日运势 ✨</div>
         </div>
 
         <div class="pet-section">
             <div class="pet-canvas-container">
-                <canvas id="petCanvas" width="320" height="320"></canvas>
+                <div class="pet-base"></div>
+                <canvas id="petCanvas" width="380" height="380"></canvas>
             </div>
             <div class="happiness-bar-wrap">
                 <div id="happinessFill" style="width: 80%;"></div>
             </div>
             <div class="action-rings">
-                <div class="ring-item" id="feedRing">🍰</div>
-                <div class="ring-item" id="drinkRing">🧃</div>
-                <div class="ring-item" id="sleepRing">🌸</div>
+                <div class="ring-item" id="feedRing" title="喂食">🍰</div>
+                <div class="ring-item" id="drinkRing" title="喝水">🧃</div>
+                <div class="ring-item" id="sleepRing" title="睡觉/起床">🌸</div>
             </div>
-            <div class="pet-tip">轻点小猪戏耍 · 喂饮安眠</div>
+            <div class="pet-tip">点击小猪玩耍 · 喂食喝水养萌宠</div>
         </div>
     </div>
 </div>
 
 <div id="fortuneModal" class="modal-overlay hidden">
     <div class="fortune-modal">
-        <h3 style="text-align:center; color:#2d2b16; font-size: 28px; margin-bottom: 10px;">🐖 福运祥云</h3>
-        <div class="stat-row"><span class="stat-label">事业</span><div class="stat-bar-bg"><div class="stat-bar-fill" style="width:78%"></div></div><span>78</span></div>
-        <div class="stat-row"><span class="stat-label">爱情</span><div class="stat-bar-bg"><div class="stat-bar-fill" style="width:65%"></div></div><span>65</span></div>
-        <div class="stat-row"><span class="stat-label">健康</span><div class="stat-bar-bg"><div class="stat-bar-fill" style="width:88%"></div></div><span>88</span></div>
-        <div class="stat-row"><span class="stat-label">财运</span><div class="stat-bar-bg"><div class="stat-bar-fill" style="width:72%"></div></div><span>72</span></div>
-        <div class="lucky-grid">
-            <div>🐅 贵人: 虎</div><div>🔢 数字: 3,8</div>
-            <div>🎨 颜色: 赭石金</div><div>🧭 喜神: 东南</div>
+        <div class="cloud-decoration cloud-1">☁</div>
+        <div class="cloud-decoration cloud-2">☁</div>
+        <div class="cloud-decoration cloud-3">☁</div>
+        
+        <div class="modal-header">
+            <div class="modal-title">🐷 今日福运</div>
         </div>
-        <div>✅ 适宜: 签约 · 出行 · 雅集</div>
-        <div>❌ 忌讳: 动土 · 争讼</div>
-        <div class="close-modal"><span id="closeModalBtn">关 闭</span></div>
+        
+        <div class="modal-content">
+            <div class="stat-section">
+                <div class="stat-row">
+                    <span class="stat-label">事业运</span>
+                    <div class="stat-bar-bg"><div class="stat-bar-fill" id="careerBar" style="width:0%"></div></div>
+                    <span class="stat-value" id="careerValue">--</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">爱情运</span>
+                    <div class="stat-bar-bg"><div class="stat-bar-fill" id="loveBar" style="width:0%"></div></div>
+                    <span class="stat-value" id="loveValue">--</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">健康运</span>
+                    <div class="stat-bar-bg"><div class="stat-bar-fill" id="healthBar" style="width:0%"></div></div>
+                    <span class="stat-value" id="healthValue">--</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">财运</span>
+                    <div class="stat-bar-bg"><div class="stat-bar-fill" id="wealthBar" style="width:0%"></div></div>
+                    <span class="stat-value" id="wealthValue">--</span>
+                </div>
+            </div>
+
+            <div class="lucky-section">
+                <div class="lucky-grid">
+                    <div class="lucky-item">
+                        <span class="lucky-icon">🐕</span>
+                        <span>贵人: <strong id="guiRen">虎</strong></span>
+                    </div>
+                    <div class="lucky-item">
+                        <span class="lucky-icon">🔢</span>
+                        <span>幸运数: <strong id="luckyNum">3,8</strong></span>
+                    </div>
+                    <div class="lucky-item">
+                        <span class="lucky-icon">🎨</span>
+                        <span>幸运色: <strong id="luckyColor">琥珀金</strong></span>
+                    </div>
+                    <div class="lucky-item">
+                        <span class="lucky-icon">🧭</span>
+                        <span>喜神位: <strong id="xiShen">东南</strong></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="yi-ji-section">
+                <div class="yi-box">
+                    <div class="yi-ji-title">✅ 今日宜</div>
+                    <div class="yi-ji-content" id="yiContent">签约 · 出行<br>会友 · 纳财</div>
+                </div>
+                <div class="ji-box">
+                    <div class="yi-ji-title">❌ 今日忌</div>
+                    <div class="yi-ji-content" id="jiContent">争吵 · 动土<br>搬迁 · 诉讼</div>
+                </div>
+            </div>
+
+            <div class="fortune-quote">
+                <div class="quote-text" id="fortuneQuote">福运亨通，诸事顺遂</div>
+            </div>
+
+            <div class="close-modal">
+                <span class="close-modal-btn" id="closeModalBtn">关 闭</span>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -362,249 +784,936 @@
     (function(){
         "use strict";
 
-        // ---------- 存储 ----------
-        const STORAGE_HAPPINESS = 'pig_happy';
-        const STORAGE_LAST = 'pig_last';
-        const STORAGE_SLEEP = 'pig_sleep';
-        
-        let happiness = 80;
-        let isSleeping = false;
-        let lastInteractionTime = Date.now();
-        
-        // 动画状态
-        let eatProgress = 0;      // 0-1
-        let drinkProgress = 0;
-        let playProgress = 0;
-        let sleepAnim = 0;        // 睡觉/起床过渡
-        let animFrame = null;
-        
+        // ========== 配置常量 ==========
+        const CONFIG = {
+            SLEEP_TIME: { start: 21, end: 7 },  // 睡觉时间 21:00 - 07:00
+            WAKE_TIME: { start: 7, end: 9 },     // 可起床时间 07:00 - 09:00
+            CANVAS_SIZE: 380
+        };
+
+        const STORAGE = {
+            HAPPINESS: 'piggy_happiness',
+            LAST_INTERACT: 'piggy_last_interact',
+            IS_SLEEPING: 'piggy_is_sleeping',
+            SLEEP_START_TIME: 'piggy_sleep_start',
+            FORTUNE_DATE: 'piggy_fortune_date',
+            FORTUNE_DATA: 'piggy_fortune_data'
+        };
+
+        const FORTUNE_DATA = {
+            guiRen: ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪'],
+            luckyNum: ['3,8', '1,6', '2,7', '4,9', '5,0', '3,7', '2,8', '1,9', '4,6', '5,8'],
+            luckyColor: ['琥珀金', '翡翠绿', '朱砂红', '墨玉黑', '青花瓷蓝', '胭脂粉', '象牙白', '紫檀紫', '明黄', '银白'],
+            xiShen: ['东南', '西北', '正南', '正北', '东北', '西南', '正东', '正西'],
+            yi: ['签约 · 出行\n会友 · 纳财', '开业 · 嫁娶\n搬家 · 装修', '求学 · 考试\n面试 · 谈判', '投资 · 理财\n合作 · 签约'],
+            ji: ['争吵 · 动土\n搬迁 · 诉讼', '借贷 · 担保\n冒险 · 投机', '远行 · 夜行\n独身 · 轻信', '冲动 · 熬夜\n暴饮暴食'],
+            quotes: ['福运亨通，诸事顺遂', '贵人相助，心想事成', '财源广进，步步高升', '桃花朵朵，姻缘美满', 
+                     '身体健康，精神饱满', '平安喜乐，岁月静好', '机遇临门，把握当下', '厚积薄发，一鸣惊人']
+        };
+
+        // ========== 全局状态 ==========
+        const state = {
+            happiness: 80,
+            isSleeping: false,
+            sleepStartTime: null,
+            lastInteractionTime: Date.now(),
+            animation: {
+                eating: 0,
+                drinking: 0,
+                playing: 0,
+                sleeping: 0,
+                blink: 0,
+                bounce: 0,
+                tailWag: 0,
+                earTwitch: 0,
+                snore: 0,
+                heartFloat: 0
+            },
+            mousePos: { x: 0, y: 0 },
+            isLookingAtMouse: false,
+            frameCount: 0
+        };
+
         const canvas = document.getElementById('petCanvas');
         const ctx = canvas.getContext('2d');
         const happinessFill = document.getElementById('happinessFill');
-        
-        // 初始化存储与离线衰减
-        function initFromStorage() {
-            const savedHappy = localStorage.getItem(STORAGE_HAPPINESS);
-            const savedLast = localStorage.getItem(STORAGE_LAST);
-            const savedSleep = localStorage.getItem(STORAGE_SLEEP);
-            const now = Date.now();
-            if (savedHappy !== null) {
-                happiness = parseFloat(savedHappy);
-                lastInteractionTime = savedLast ? parseInt(savedLast) : now;
-                isSleeping = savedSleep === 'true';
+        const feedRing = document.getElementById('feedRing');
+        const drinkRing = document.getElementById('drinkRing');
+        const sleepRing = document.getElementById('sleepRing');
+        const sleepStatusTip = document.getElementById('sleepStatusTip');
+
+        // ========== 初始化 ==========
+        function init() {
+            loadState();
+            applyOfflineDecay();
+            updateHappinessUI();
+            updateSleepUI();
+            startBubbleShow();
+            drawPig();
+            bindEvents();
+            persistState();
+            
+            // 定时检查
+            setInterval(checkTimeBasedEvents, 30000);
+            checkTimeBasedEvents();
+        }
+
+        function loadState() {
+            const stored = localStorage.getItem(STORAGE.HAPPINESS);
+            if (stored !== null) {
+                state.happiness = parseFloat(stored);
+                state.lastInteractionTime = parseInt(localStorage.getItem(STORAGE.LAST_INTERACT)) || Date.now();
+                state.isSleeping = localStorage.getItem(STORAGE.IS_SLEEPING) === 'true';
+                state.sleepStartTime = localStorage.getItem(STORAGE.SLEEP_START_TIME);
+            }
+            state.happiness = Math.min(100, Math.max(0, state.happiness));
+        }
+
+        function persistState() {
+            localStorage.setItem(STORAGE.HAPPINESS, state.happiness);
+            localStorage.setItem(STORAGE.LAST_INTERACT, state.lastInteractionTime);
+            localStorage.setItem(STORAGE.IS_SLEEPING, state.isSleeping);
+            if (state.sleepStartTime) {
+                localStorage.setItem(STORAGE.SLEEP_START_TIME, state.sleepStartTime);
+            }
+        }
+
+        // ========== 时间相关 ==========
+        function getCurrentHour() {
+            return new Date().getHours();
+        }
+
+        function canGoToSleep() {
+            const hour = getCurrentHour();
+            // 21:00 后可以手动睡觉，或者 22:00 后强制睡觉
+            return hour >= CONFIG.SLEEP_TIME.start || hour < CONFIG.WAKE_TIME.start;
+        }
+
+        function canWakeUp() {
+            const hour = getCurrentHour();
+            // 只能在 07:00-09:00 起床
+            return hour >= CONFIG.WAKE_TIME.start && hour < CONFIG.WAKE_TIME.end;
+        }
+
+        function isForcedSleepTime() {
+            const hour = getCurrentHour();
+            return hour >= 22 || hour < 7;
+        }
+
+        function checkTimeBasedEvents() {
+            const hour = getCurrentHour();
+            
+            // 强制睡觉时间
+            if (isForcedSleepTime() && !state.isSleeping) {
+                goToSleep(true);
+                showOfflineNotice('🌙 夜深了，小猪自动去睡觉了~');
+            }
+            
+            // 自动起床时间
+            if (hour >= CONFIG.WAKE_TIME.start && hour < CONFIG.WAKE_TIME.end && state.isSleeping) {
+                wakeUp(true);
+                showOfflineNotice('☀️ 天亮了，小猪自然醒啦！');
+            }
+            
+            updateSleepUI();
+        }
+
+        // ========== 睡觉/起床功能 ==========
+        function goToSleep(isAuto = false) {
+            if (state.isSleeping) return;
+            
+            state.isSleeping = true;
+            state.sleepStartTime = Date.now();
+            state.animation.sleeping = 1;
+            modifyHappiness(5, !isAuto);
+            persistState();
+            updateSleepUI();
+            
+            if (!isAuto) {
+                showOfflineNotice('💤 小猪乖乖睡觉去了，晚安~');
+            }
+        }
+
+        function wakeUp(isAuto = false) {
+            if (!state.isSleeping) return;
+            
+            // 检查是否允许起床
+            if (!isAuto && !canWakeUp()) {
+                const hour = getCurrentHour();
+                let msg = '';
+                if (hour < CONFIG.WAKE_TIME.start) {
+                    msg = '⏰ 还早呢，小猪要睡到 7 点才能起床哦~';
+                } else {
+                    msg = '⏰ 起床时间过了，小猪已经睡过头啦！';
+                }
+                showSleepStatus(msg);
+                return;
+            }
+            
+            state.isSleeping = false;
+            state.sleepStartTime = null;
+            state.animation.bounce = 2;
+            modifyHappiness(20, !isAuto);
+            persistState();
+            updateSleepUI();
+            
+            if (!isAuto) {
+                showOfflineNotice('☀️ 小猪起床啦！精神满满！');
+            }
+        }
+
+        function updateSleepUI() {
+            const hour = getCurrentHour();
+            
+            if (state.isSleeping) {
+                sleepRing.textContent = '🛏️';
+                sleepRing.classList.add('sleep-disabled');
+                feedRing.classList.add('disabled');
+                drinkRing.classList.add('disabled');
                 
-                if (!isSleeping) {
-                    const hours = (now - lastInteractionTime) / 3600000;
-                    if (hours >= 1) {
-                        const dec = Math.floor(hours) * 20;
-                        const old = happiness;
-                        happiness = Math.max(0, happiness - dec);
-                        if (old - happiness > 0) showOffline(`离墨 ${Math.floor(hours)} 时辰，福气略减`);
-                        lastInteractionTime = now;
+                if (canWakeUp()) {
+                    sleepRing.title = '点击叫醒小猪 (7:00-9:00)';
+                    sleepStatusTip.textContent = '⏰ 可以起床啦！';
+                } else if (hour < CONFIG.WAKE_TIME.start) {
+                    sleepRing.title = '小猪还在睡觉 (7点后才能起床)';
+                    sleepStatusTip.textContent = '💤 小猪熟睡中...';
+                } else {
+                    sleepRing.title = '小猪睡过头了';
+                    sleepStatusTip.textContent = '💤 小猪还在赖床...';
+                }
+            } else {
+                sleepRing.classList.remove('sleep-disabled');
+                feedRing.classList.remove('disabled');
+                drinkRing.classList.remove('disabled');
+                
+                if (canGoToSleep()) {
+                    sleepRing.textContent = '🌙';
+                    sleepRing.title = '点击让小猪睡觉';
+                } else if (hour >= CONFIG.WAKE_TIME.start && hour < CONFIG.WAKE_TIME.end) {
+                    sleepRing.textContent = '🐓';
+                    sleepRing.title = '起床时间 (7:00-9:00)';
+                } else {
+                    const icons = ['🌸', '🌼', '🌺', '🌻'];
+                    sleepRing.textContent = icons[Math.floor(Date.now() / 10000) % icons.length];
+                    sleepRing.title = '睡觉时间：21:00后';
+                }
+                sleepStatusTip.textContent = '';
+            }
+        }
+
+        function showSleepStatus(msg) {
+            sleepStatusTip.textContent = msg;
+            sleepStatusTip.classList.add('show');
+            setTimeout(() => sleepStatusTip.classList.remove('show'), 2500);
+        }
+
+        // ========== 其他功能 ==========
+        function applyOfflineDecay() {
+            if (state.isSleeping) return;
+            const hoursPassed = (Date.now() - state.lastInteractionTime) / (1000 * 60 * 60);
+            if (hoursPassed >= 1) {
+                const decay = Math.floor(hoursPassed) * 12;
+                const oldHappy = state.happiness;
+                state.happiness = Math.max(0, state.happiness - decay);
+                if (oldHappy > state.happiness) {
+                    showOfflineNotice(`⏳ 你离开了 ${Math.floor(hoursPassed)} 小时，小猪想念你，开心值 -${oldHappy - state.happiness}`);
+                }
+                state.lastInteractionTime = Date.now();
+            }
+        }
+
+        function showOfflineNotice(msg) {
+            const notice = document.getElementById('offlineNotice');
+            notice.textContent = msg;
+            notice.style.opacity = '1';
+            setTimeout(() => notice.style.opacity = '0', 4000);
+        }
+
+        function modifyHappiness(delta, isInteraction = true) {
+            state.happiness = Math.min(100, Math.max(0, state.happiness + delta));
+            updateHappinessUI();
+            if (isInteraction) {
+                state.lastInteractionTime = Date.now();
+            }
+            persistState();
+        }
+
+        function updateHappinessUI() {
+            happinessFill.style.width = state.happiness + '%';
+        }
+
+        // ========== 气泡开场 ==========
+        function startBubbleShow() {
+            const bubbleLayer = document.getElementById('bubble-layer');
+            const mainUI = document.getElementById('main-interface');
+            const pigEmojis = ['🐷', '🐽', '🐖', '🌸', '✨', '💕', '🌙', '☁'];
+            
+            for (let i = 0; i < 60; i++) {
+                setTimeout(() => {
+                    const pig = document.createElement('div');
+                    pig.className = 'bubble-pig';
+                    pig.textContent = pigEmojis[Math.floor(Math.random() * pigEmojis.length)];
+                    pig.style.left = Math.random() * 95 + 2 + '%';
+                    pig.style.animationDuration = (4 + Math.random() * 5) + 's';
+                    pig.style.fontSize = (24 + Math.floor(Math.random() * 44)) + 'px';
+                    bubbleLayer.appendChild(pig);
+                    setTimeout(() => pig.remove(), 12000);
+                }, i * 50);
+            }
+            
+            setTimeout(() => mainUI.classList.add('show'), 3500);
+        }
+
+        // ========== 精致Q版小猪绘制 ==========
+        function drawPig() {
+            state.frameCount++;
+            ctx.clearRect(0, 0, CONFIG.CANVAS_SIZE, CONFIG.CANVAS_SIZE);
+            
+            const centerX = CONFIG.CANVAS_SIZE / 2;
+            const centerY = CONFIG.CANVAS_SIZE / 2 + 30;
+            const time = Date.now() / 1000;
+            
+            // 呼吸动画 - 更自然
+            const breathe = Math.sin(time * 1.5) * 1.5;
+            const microBreathe = Math.sin(time * 4) * 0.3;
+            
+            // 弹跳动画
+            const bounce = state.animation.bounce > 0 ? 
+                state.animation.bounce * Math.sin(time * 20) * 8 : 0;
+            
+            // 确定表情
+            let expression = 'happy';
+            if (state.isSleeping) expression = 'sleeping';
+            else if (state.happiness > 75) expression = 'happy';
+            else if (state.happiness > 50) expression = 'content';
+            else if (state.happiness > 25) expression = 'sad';
+            else expression = 'angry';
+
+            ctx.save();
+            ctx.translate(centerX, centerY + bounce);
+
+            // ========== 卷尾巴（带摇摆动画）==========
+            const tailWagBase = Math.sin(time * 2) * 0.15;
+            const tailWagExcited = state.animation.tailWag > 0 ? 
+                Math.sin(time * 15) * state.animation.tailWag * 0.3 : 0;
+            const tailWag = tailWagBase + tailWagExcited;
+            
+            ctx.save();
+            ctx.translate(95, -5);
+            ctx.rotate(tailWag);
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.bezierCurveTo(18, -18, 42, -12, 36, 12);
+            ctx.bezierCurveTo(30, 30, 12, 24, 6, 12);
+            ctx.strokeStyle = '#8b5a5a';
+            ctx.lineWidth = 5;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+            // 尾巴高光
+            ctx.strokeStyle = '#ffb6c1';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.restore();
+
+            // ========== 后腿（更圆润）==========
+            const legGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, 30);
+            legGrad.addColorStop(0, '#ffd5dc');
+            legGrad.addColorStop(1, '#ffb6c1');
+            ctx.fillStyle = legGrad;
+            ctx.strokeStyle = '#8b5a5a';
+            ctx.lineWidth = 2.5;
+            
+            // 左后腿
+            ctx.beginPath();
+            ctx.ellipse(-55, 70, 22, 30, 0.25, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            // 脚掌
+            ctx.fillStyle = '#ffaeb9';
+            ctx.beginPath();
+            ctx.ellipse(-58, 85, 12, 8, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = legGrad;
+            // 右后腿
+            ctx.beginPath();
+            ctx.ellipse(55, 70, 22, 30, -0.25, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            // 脚掌
+            ctx.fillStyle = '#ffaeb9';
+            ctx.beginPath();
+            ctx.ellipse(58, 85, 12, 8, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // ========== 身体（更精致）==========
+            const bodyScale = 1 + (breathe + microBreathe) * 0.005;
+            ctx.save();
+            ctx.scale(bodyScale, bodyScale);
+            
+            const bodyGrad = ctx.createRadialGradient(-35, -50, 0, 0, 5, 100);
+            bodyGrad.addColorStop(0, '#fff0f3');
+            bodyGrad.addColorStop(0.3, '#ffe4e9');
+            bodyGrad.addColorStop(0.7, '#ffc0cb');
+            bodyGrad.addColorStop(1, '#ffb6c1');
+            
+            ctx.fillStyle = bodyGrad;
+            ctx.beginPath();
+            ctx.ellipse(0, 15, 95, 78, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#8b5a5a';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            
+            // 身体阴影
+            ctx.fillStyle = 'rgba(139, 90, 90, 0.1)';
+            ctx.beginPath();
+            ctx.ellipse(0, 75, 70, 15, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 身体高光
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.beginPath();
+            ctx.ellipse(-40, -30, 30, 22, -0.4, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.restore();
+
+            // ========== 前腿 ==========
+            ctx.fillStyle = legGrad;
+            // 左前腿
+            ctx.beginPath();
+            ctx.ellipse(-42, 82, 20, 28, 0.15, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = '#ffaeb9';
+            ctx.beginPath();
+            ctx.ellipse(-45, 95, 14, 10, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = legGrad;
+            // 右前腿
+            ctx.beginPath();
+            ctx.ellipse(42, 82, 20, 28, -0.15, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = '#ffaeb9';
+            ctx.beginPath();
+            ctx.ellipse(45, 95, 14, 10, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // ========== 头部（带微动）==========
+            const headY = -45 + Math.sin(time * 1.2) * 1.5;
+            const headTilt = Math.sin(time * 0.8) * 0.02;
+            
+            ctx.save();
+            ctx.rotate(headTilt);
+            
+            const headGrad = ctx.createRadialGradient(-30, headY - 40, 0, 0, headY, 82);
+            headGrad.addColorStop(0, '#fff5f7');
+            headGrad.addColorStop(0.4, '#ffe4e9');
+            headGrad.addColorStop(0.8, '#ffc0cb');
+            headGrad.addColorStop(1, '#ffb6c1');
+            
+            ctx.fillStyle = headGrad;
+            ctx.beginPath();
+            ctx.arc(0, headY, 80, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#8b5a5a';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // ========== 耳朵（带抽动动画）==========
+            const earTwitch = state.animation.earTwitch > 0 ? 
+                Math.sin(time * 30) * state.animation.earTwitch * 0.15 : 0;
+            
+            // 左耳
+            ctx.save();
+            ctx.translate(-58, headY - 52);
+            ctx.rotate(-0.35 + earTwitch);
+            ctx.fillStyle = '#ffb6c1';
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 26, 38, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = '#ffaeb9';
+            ctx.beginPath();
+            ctx.ellipse(0, 5, 15, 22, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+            
+            // 右耳
+            ctx.save();
+            ctx.translate(58, headY - 52);
+            ctx.rotate(0.35 - earTwitch);
+            ctx.fillStyle = '#ffb6c1';
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 26, 38, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = '#ffaeb9';
+            ctx.beginPath();
+            ctx.ellipse(0, 5, 15, 22, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+
+            // ========== 腮红（更自然）==========
+            const blushOpacity = expression === 'happy' || expression === 'content' ? 0.5 : 0.25;
+            const blushGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, 20);
+            blushGrad.addColorStop(0, `rgba(255, 182, 193, ${blushOpacity})`);
+            blushGrad.addColorStop(1, `rgba(255, 182, 193, 0)`);
+            ctx.fillStyle = blushGrad;
+            ctx.beginPath();
+            ctx.ellipse(-52, headY + 8, 22, 16, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(52, headY + 8, 22, 16, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // ========== 眼睛（更精致）==========
+            const blinkPhase = (time * 2.5) % 10;
+            const isBlinking = blinkPhase > 9.2 || state.animation.blink > 0;
+            
+            if (expression === 'sleeping') {
+                // 睡觉闭眼 - 带呼吸感的弧线
+                ctx.strokeStyle = '#5d3a1a';
+                ctx.lineWidth = 3.5;
+                ctx.lineCap = 'round';
+                const sleepBreath = Math.sin(time * 0.8) * 1;
+                ctx.beginPath();
+                ctx.arc(-35, headY - 10 + sleepBreath, 12, 0.3, Math.PI - 0.3);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(35, headY - 10 + sleepBreath, 12, 0.3, Math.PI - 0.3);
+                ctx.stroke();
+                
+                // 睡觉符号动画
+                const snoreY = Math.sin(time * 2) * 3;
+                ctx.font = 'bold 28px serif';
+                ctx.fillStyle = `rgba(107, 142, 159, ${0.6 + Math.sin(time * 3) * 0.3})`;
+                ctx.fillText('💤', 70, headY - 55 + snoreY);
+                
+                // 鼻涕泡
+                const bubbleSize = 8 + Math.sin(time * 1.5) * 3;
+                ctx.fillStyle = 'rgba(200, 230, 255, 0.6)';
+                ctx.strokeStyle = 'rgba(150, 200, 230, 0.5)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.arc(25, headY + 5, bubbleSize, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.beginPath();
+                ctx.arc(22, headY + 2, 3, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (isBlinking) {
+                // 眨眼
+                ctx.strokeStyle = '#5d3a1a';
+                ctx.lineWidth = 3.5;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(-50, headY - 10);
+                ctx.quadraticCurveTo(-35, headY - 5, -20, headY - 10);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(20, headY - 10);
+                ctx.quadraticCurveTo(35, headY - 5, 50, headY - 10);
+                ctx.stroke();
+            } else {
+                // 睁眼 - 带高光和眼神追踪
+                ctx.fillStyle = '#3d2914';
+                
+                let eyeOffsetX = 0, eyeOffsetY = 0;
+                if (state.isLookingAtMouse && !state.isSleeping) {
+                    const dx = state.mousePos.x - centerX;
+                    const dy = state.mousePos.y - centerY;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist > 0) {
+                        eyeOffsetX = Math.min(Math.max(dx / dist * 5, -4), 4);
+                        eyeOffsetY = Math.min(Math.max(dy / dist * 3, -3), 3);
                     }
                 }
-            } else {
-                happiness = 80;
-                lastInteractionTime = now;
-                isSleeping = false;
-            }
-            happiness = Math.min(100, Math.max(0, happiness));
-        }
-        function showOffline(msg) {
-            const el = document.getElementById('offlineNotice');
-            el.textContent = msg;
-            el.style.opacity = 1;
-            setTimeout(() => el.style.opacity = 0, 4000);
-        }
-        function persist() {
-            localStorage.setItem(STORAGE_HAPPINESS, happiness);
-            localStorage.setItem(STORAGE_LAST, lastInteractionTime);
-            localStorage.setItem(STORAGE_SLEEP, isSleeping);
-        }
-        
-        initFromStorage();
-        updateHappinessUI();
-        persist();
-
-        // 气泡: 猪鼻子
-        function startBubbles() {
-            const layer = document.getElementById('bubble-layer');
-            for(let i=0; i<50; i++) {
-                setTimeout(() => {
-                    const nose = document.createElement('div');
-                    nose.className = 'bubble-nose';
-                    nose.textContent = '🐽';
-                    nose.style.left = Math.random() * 95 + '%';
-                    nose.style.animationDuration = (4 + Math.random() * 6) + 's';
-                    nose.style.fontSize = (22 + Math.floor(Math.random()*30)) + 'px';
-                    layer.appendChild(nose);
-                    setTimeout(() => nose.remove(), 10000);
-                }, i * 70);
-            }
-            setTimeout(() => document.getElementById('main-interface').classList.add('show'), 2500);
-        }
-        startBubbles();
-
-        // 绘画——水墨Q版猪 + 动画
-        function drawPet() {
-            ctx.clearRect(0, 0, 320, 320);
-            ctx.shadowColor = '#3f321e';
-            ctx.shadowBlur = 10;
-            
-            // 根据开心值表情
-            let mood = 'happy';
-            if (isSleeping) mood = 'sleep';
-            else if (happiness > 60) mood = 'happy';
-            else if (happiness > 40) mood = 'sad';
-            else if (happiness > 20) mood = 'verysad';
-            else mood = 'angry';
-            
-            // 水墨笔触
-            ctx.lineWidth = 3.5;
-            ctx.strokeStyle = '#5f4e32';
-            ctx.fillStyle = '#eacdb0';
-            
-            // 身体 (水墨晕染效果)
-            ctx.beginPath();
-            ctx.ellipse(160, 180, 75, 65, 0, 0, Math.PI*2);
-            ctx.fill();
-            ctx.stroke();
-            // 肚皮
-            ctx.fillStyle = '#f7e3ca';
-            ctx.beginPath();
-            ctx.ellipse(160, 190, 55, 45, 0, 0, Math.PI*2);
-            ctx.fill();
-            ctx.strokeStyle = '#8f7a58';
-            ctx.stroke();
-            
-            // 耳朵
-            ctx.fillStyle = '#dbb094';
-            ctx.beginPath(); ctx.ellipse(105, 120, 22, 30, -0.25, 0, Math.PI*2); ctx.fill(); ctx.stroke();
-            ctx.beginPath(); ctx.ellipse(215, 120, 22, 30, 0.25, 0, Math.PI*2); ctx.fill(); ctx.stroke();
-            
-            // 鼻子 (猪鼻子)
-            ctx.fillStyle = '#b5766a';
-            ctx.beginPath(); ctx.ellipse(160, 195, 20, 15, 0, 0, Math.PI*2); ctx.fill(); ctx.strokeStyle = '#6d4c3d'; ctx.stroke();
-            ctx.fillStyle = '#4a3122';
-            ctx.beginPath(); ctx.arc(150, 192, 4, 0, 2*Math.PI); ctx.fill();
-            ctx.beginPath(); ctx.arc(170, 192, 4, 0, 2*Math.PI); ctx.fill();
-            
-            // 眼睛和表情
-            ctx.fillStyle = '#1f1a0e';
-            if (mood === 'sleep') {
-                ctx.beginPath(); ctx.arc(130, 148, 7, 0, Math.PI, true); ctx.fill();
-                ctx.beginPath(); ctx.arc(190, 148, 7, 0, Math.PI, true); ctx.fill();
-                ctx.font = 'bold 26px "KaiTi"'; ctx.fillStyle = '#36573b'; ctx.fillText('💤', 210, 100);
-            } else {
-                ctx.beginPath(); ctx.arc(130, 148, 7, 0, 2*Math.PI); ctx.fill();
-                ctx.beginPath(); ctx.arc(190, 148, 7, 0, 2*Math.PI); ctx.fill();
-                ctx.fillStyle = '#f5eedd'; 
-                ctx.beginPath(); ctx.arc(125, 142, 3,0,2*Math.PI); ctx.fill(); 
-                ctx.beginPath(); ctx.arc(185, 142, 3,0,2*Math.PI); ctx.fill();
                 
-                ctx.strokeStyle = '#3a2e1c'; ctx.lineWidth = 3;
-                if (mood === 'angry') {
-                    ctx.beginPath(); ctx.moveTo(115,130); ctx.lineTo(140,138); ctx.stroke();
-                    ctx.beginPath(); ctx.moveTo(205,130); ctx.lineTo(180,138); ctx.stroke();
-                } else if (mood === 'sad' || mood === 'verysad') {
-                    ctx.beginPath(); ctx.moveTo(115,142); ctx.lineTo(140,135); ctx.stroke();
-                    ctx.beginPath(); ctx.moveTo(205,142); ctx.lineTo(180,135); ctx.stroke();
+                // 左眼
+                ctx.beginPath();
+                ctx.arc(-35 + eyeOffsetX, headY - 12 + eyeOffsetY, 12, 0, Math.PI * 2);
+                ctx.fill();
+                // 右眼
+                ctx.beginPath();
+                ctx.arc(35 + eyeOffsetX, headY - 12 + eyeOffsetY, 12, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // 眼睛高光（更精致）
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+                ctx.beginPath();
+                ctx.arc(-40 + eyeOffsetX, headY - 16 + eyeOffsetY, 5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(30 + eyeOffsetX, headY - 16 + eyeOffsetY, 5, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // 小高光点
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+                ctx.beginPath();
+                ctx.arc(-30 + eyeOffsetX, headY - 8 + eyeOffsetY, 2.5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(40 + eyeOffsetX, headY - 8 + eyeOffsetY, 2.5, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // 眉毛
+                ctx.strokeStyle = '#8b5a5a';
+                ctx.lineWidth = 2.5;
+                ctx.lineCap = 'round';
+                if (expression === 'angry') {
+                    ctx.beginPath();
+                    ctx.moveTo(-55, headY - 30);
+                    ctx.lineTo(-22, headY - 22);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(55, headY - 30);
+                    ctx.lineTo(22, headY - 22);
+                    ctx.stroke();
+                } else if (expression === 'sad') {
+                    ctx.beginPath();
+                    ctx.moveTo(-52, headY - 25);
+                    ctx.lineTo(-20, headY - 20);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(52, headY - 25);
+                    ctx.lineTo(20, headY - 20);
+                    ctx.stroke();
+                } else if (expression === 'happy' || expression === 'content') {
+                    ctx.beginPath();
+                    ctx.moveTo(-52, headY - 22);
+                    ctx.quadraticCurveTo(-35, headY - 32, -18, headY - 22);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(18, headY - 22);
+                    ctx.quadraticCurveTo(35, headY - 32, 52, headY - 22);
+                    ctx.stroke();
                 }
             }
+
+            // ========== 鼻子（更立体）==========
+            const noseGrad = ctx.createRadialGradient(-5, headY + 12, 0, 0, headY + 18, 25);
+            noseGrad.addColorStop(0, '#ffcdd5');
+            noseGrad.addColorStop(1, '#ffaeb9');
+            ctx.fillStyle = noseGrad;
+            ctx.beginPath();
+            ctx.ellipse(0, headY + 18, 26, 20, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#c47a7a';
+            ctx.lineWidth = 2;
+            ctx.stroke();
             
-            // 进食/喝水/玩耍动画
-            if (eatProgress > 0) {
-                ctx.font = '38px "Segoe UI Emoji"'; ctx.fillStyle = '#ebc47f';
-                ctx.fillText('🍰', 220, 70);
-                ctx.fillText('✨', 180, 50);
-                eatProgress *= 0.8; if(eatProgress<0.02) eatProgress=0;
+            // 鼻孔
+            ctx.fillStyle = '#7a4a4a';
+            ctx.beginPath();
+            ctx.ellipse(-9, headY + 18, 5, 7, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(9, headY + 18, 5, 7, 0, 0, Math.PI * 2);
+            ctx.fill();
+            // 鼻孔高光
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.beginPath();
+            ctx.arc(-11, headY + 15, 2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(7, headY + 15, 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // ========== 嘴巴 ==========
+            ctx.strokeStyle = '#8b5a5a';
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = 'round';
+            if (expression === 'happy' || expression === 'content') {
+                ctx.beginPath();
+                ctx.arc(0, headY + 42, 14, 0.2, Math.PI - 0.2);
+                ctx.stroke();
+                // 舌头
+                ctx.fillStyle = '#ff9999';
+                ctx.beginPath();
+                ctx.ellipse(0, headY + 50, 6, 4, 0, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (expression === 'sad') {
+                ctx.beginPath();
+                ctx.arc(0, headY + 55, 12, Math.PI + 0.3, -0.3);
+                ctx.stroke();
+            } else if (expression === 'sleeping') {
+                ctx.beginPath();
+                ctx.arc(0, headY + 42, 14, 0.2, Math.PI - 0.2);
+                ctx.stroke();
+            } else {
+                ctx.beginPath();
+                ctx.moveTo(-10, headY + 45);
+                ctx.lineTo(10, headY + 45);
+                ctx.stroke();
             }
-            if (drinkProgress > 0) {
-                ctx.font = '38px "Segoe UI Emoji"'; ctx.fillStyle = '#a5d1e0';
-                ctx.fillText('🧃', 220, 80);
-                drinkProgress *= 0.8; if(drinkProgress<0.02) drinkProgress=0;
-            }
-            if (playProgress > 0) {
-                ctx.font = '34px sans'; ctx.fillStyle = '#d4bc8a';
-                ctx.fillText('🌸', 80, 60);
-                ctx.fillText('✨', 240, 130);
-                playProgress *= 0.8; if(playProgress<0.01) playProgress=0;
+
+            ctx.restore();
+
+            // ========== 特效绘制 ==========
+            if (state.animation.eating > 0) drawEatingEffect();
+            if (state.animation.drinking > 0) drawDrinkingEffect();
+            if (state.animation.playing > 0) drawPlayingEffect();
+            if (state.animation.heartFloat > 0) drawHeartEffect();
+
+            // 动画衰减
+            Object.keys(state.animation).forEach(key => {
+                if (state.animation[key] > 0 && key !== 'sleeping') {
+                    state.animation[key] *= 0.96;
+                    if (state.animation[key] < 0.01) state.animation[key] = 0;
+                }
+            });
+
+            requestAnimationFrame(drawPig);
+        }
+
+        // ========== 特效绘制 ==========
+        function drawEatingEffect() {
+            const alpha = state.animation.eating;
+            const foods = ['🍰', '🍪', '🧁', '🥕', '🍎', '🥬'];
+            const food = foods[Math.floor(Date.now() / 800) % foods.length];
+            const y = 100 - alpha * 50;
+            
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.font = '48px serif';
+            ctx.fillText(food, 260, y);
+            
+            // 咀嚼效果
+            ctx.font = '28px serif';
+            ctx.fillStyle = '#ff6b9d';
+            ctx.fillText('😋', 290, y - 25);
+            ctx.fillText('✨', 240, y + 15);
+            ctx.restore();
+        }
+
+        function drawDrinkingEffect() {
+            const alpha = state.animation.drinking;
+            const time = Date.now() / 150;
+            
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            
+            // 水滴
+            for (let i = 0; i < 6; i++) {
+                const x = 260 + Math.sin(time + i * 0.8) * 25;
+                const y = 120 + (1 - alpha) * 80 + i * 12;
+                const size = 5 + i * 1.5;
+                ctx.fillStyle = `rgba(100, 180, 255, ${alpha * (0.9 - i * 0.1)})`;
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fill();
             }
             
-            // 水墨印章
-            ctx.font = '18px "KaiTi"'; ctx.fillStyle = '#916e4b'; ctx.fillText('福', 250, 280);
-            requestAnimationFrame(drawPet);
-        }
-        drawPet();
-
-        function updateHappinessUI() { happinessFill.style.width = happiness + '%'; }
-        function modifyHappiness(delta, interact = true) {
-            happiness = Math.min(100, Math.max(0, happiness + delta));
-            updateHappinessUI();
-            if (interact) lastInteractionTime = Date.now();
-            persist();
+            ctx.font = '42px serif';
+            ctx.fillText('🧃', 280, 100);
+            ctx.restore();
         }
 
-        // 互动
-        function feed() { if(isSleeping) return; eatProgress = 1.0; modifyHappiness(20); randomFood(); }
-        function drink() { if(isSleeping) return; drinkProgress = 1.0; modifyHappiness(10); }
-        function play() { if(isSleeping) return; playProgress = 1.0; modifyHappiness(2); }
-        
-        const foods = ['🍰','🍦','🥤'];
-        function randomFood() { document.getElementById('feedRing').textContent = foods[Math.floor(Math.random()*3)]; }
-        randomFood();
-        
-        function goSleep() { if(isSleeping) return; isSleeping = true; modifyHappiness(5); persist(); }
-        function wake() { if(!isSleeping) return; isSleeping = false; modifyHappiness(15); persist(); }
-        
-        // 自动作息
-        function autoCheck() {
-            const h = new Date().getHours();
-            const ring = document.getElementById('sleepRing');
-            if (h>=7 && h<9) { ring.textContent = '🐓'; if(isSleeping) wake(); }
-            else if (h>=9 && h<21) ring.textContent = ['🌸','🌼','🌺'][Math.floor(Math.random()*3)];
-            else { ring.textContent = '🛏️💤'; if(!isSleeping) goSleep(); }
+        function drawPlayingEffect() {
+            const alpha = state.animation.playing;
+            const time = Date.now() / 80;
+            
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            
+            // 旋转星星
+            for (let i = 0; i < 8; i++) {
+                const angle = time + i * Math.PI / 4;
+                const radius = 70 + Math.sin(time * 2 + i) * 25;
+                const x = 190 + Math.cos(angle) * radius;
+                const y = 160 + Math.sin(angle) * radius * 0.5;
+                ctx.font = `${18 + i * 2}px serif`;
+                ctx.fillStyle = `hsl(${45 + i * 25}, 85%, 65%)`;
+                ctx.fillText('✨', x, y);
+            }
+            
+            // 音符
+            ctx.font = '36px serif';
+            ctx.fillText('🎵', 120, 110);
+            ctx.fillText('🎶', 280, 130);
+            ctx.fillText('♪', 100, 180);
+            ctx.restore();
         }
-        setInterval(() => { autoCheck(); applyDecay(); }, 60000);
-        autoCheck();
-        
-        function applyDecay() {
-            if(isSleeping) return;
-            const hours = (Date.now() - lastInteractionTime)/3600000;
-            if(hours>=1) { const dec = Math.floor(hours)*20; if(dec>0) modifyHappiness(-dec, false); lastInteractionTime = Date.now(); persist(); }
-        }
-        applyDecay();
 
-        // 事件绑定
-        canvas.addEventListener('click', play);
-        document.getElementById('feedRing').addEventListener('click', feed);
-        document.getElementById('drinkRing').addEventListener('click', drink);
-        document.getElementById('sleepRing').addEventListener('click', ()=>{
-            const h = new Date().getHours();
-            if(h>=7&&h<9) wake(); else if(h>=21||h<7) goSleep();
-        });
-        
-        // 运势弹窗
-        const modal = document.getElementById('fortuneModal');
-        document.getElementById('fortuneBtn').addEventListener('click', ()=> modal.classList.remove('hidden'));
-        document.getElementById('closeModalBtn').addEventListener('click', ()=> modal.classList.add('hidden'));
-        modal.addEventListener('click', (e) => { if(e.target === modal) modal.classList.add('hidden'); });
-        
-        // 退出：关闭标签页
-        document.getElementById('exitApp').addEventListener('click', ()=>{
-            persist();
-            window.close();
-            // 若无法关闭则跳转空白
-            setTimeout(() => { window.location.href = 'about:blank'; }, 50);
-        });
-        
-        // 黄历
-        function updateAuspicious() {
-            const d = new Date();
-            document.getElementById('auspiciousText').innerText = `乙巳年 ${d.getMonth()+1}月${d.getDate()}日 · 宜纳福`;
+        function drawHeartEffect() {
+            const alpha = state.animation.heartFloat;
+            const time = Date.now() / 200;
+            
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.font = '32px serif';
+            
+            for (let i = 0; i < 4; i++) {
+                const x = 150 + i * 40 + Math.sin(time + i) * 10;
+                const y = 80 - alpha * 40 + Math.cos(time + i * 0.5) * 5;
+                ctx.fillText('💕', x, y);
+            }
+            ctx.restore();
         }
-        updateAuspicious();
-        window.addEventListener('beforeunload', persist);
+
+        // ========== 交互功能 ==========
+        function feedAction() {
+            if (state.isSleeping) {
+                showOfflineNotice('💤 小猪在睡觉呢，不要打扰它~');
+                return;
+            }
+            state.animation.eating = 1;
+            state.animation.bounce = 1.5;
+            state.animation.tailWag = 6;
+            state.animation.earTwitch = 1;
+            modifyHappiness(15);
+            
+            const foods = ['🍰', '🍪', '🧁', '🥕', '🍎'];
+            feedRing.textContent = foods[Math.floor(Math.random() * foods.length)];
+        }
+
+        function drinkAction() {
+            if (state.isSleeping) {
+                showOfflineNotice('💤 小猪在睡觉呢，不要打扰它~');
+                return;
+            }
+            state.animation.drinking = 1;
+            state.animation.bounce = 1;
+            modifyHappiness(10);
+        }
+
+        function playAction() {
+            if (state.isSleeping) {
+                showOfflineNotice('💤 小猪在睡觉呢，轻轻点击叫醒它~');
+                return;
+            }
+            state.animation.playing = 1;
+            state.animation.bounce = 1.8;
+            state.animation.tailWag = 10;
+            state.animation.earTwitch = 1.5;
+            state.animation.heartFloat = 1;
+            modifyHappiness(8);
+        }
+
+        // ========== 运势功能 ==========
+        function generateDailyFortune() {
+            const today = new Date().toDateString();
+            const savedDate = localStorage.getItem(STORAGE.FORTUNE_DATE);
+            
+            if (savedDate === today) {
+                return JSON.parse(localStorage.getItem(STORAGE.FORTUNE_DATA));
+            }
+            
+            const fortune = {
+                career: 60 + Math.floor(Math.random() * 35),
+                love: 55 + Math.floor(Math.random() * 40),
+                health: 65 + Math.floor(Math.random() * 30),
+                wealth: 50 + Math.floor(Math.random() * 45),
+                guiRen: FORTUNE_DATA.guiRen[Math.floor(Math.random() * 12)],
+                luckyNum: FORTUNE_DATA.luckyNum[Math.floor(Math.random() * 10)],
+                luckyColor: FORTUNE_DATA.luckyColor[Math.floor(Math.random() * 10)],
+                xiShen: FORTUNE_DATA.xiShen[Math.floor(Math.random() * 8)],
+                yi: FORTUNE_DATA.yi[Math.floor(Math.random() * 4)],
+                ji: FORTUNE_DATA.ji[Math.floor(Math.random() * 4)],
+                quote: FORTUNE_DATA.quotes[Math.floor(Math.random() * 8)]
+            };
+            
+            localStorage.setItem(STORAGE.FORTUNE_DATE, today);
+            localStorage.setItem(STORAGE.FORTUNE_DATA, JSON.stringify(fortune));
+            return fortune;
+        }
+
+        function showFortuneModal() {
+            const fortune = generateDailyFortune();
+            
+            document.getElementById('careerBar').style.width = fortune.career + '%';
+            document.getElementById('careerValue').textContent = fortune.career;
+            document.getElementById('loveBar').style.width = fortune.love + '%';
+            document.getElementById('loveValue').textContent = fortune.love;
+            document.getElementById('healthBar').style.width = fortune.health + '%';
+            document.getElementById('healthValue').textContent = fortune.health;
+            document.getElementById('wealthBar').style.width = fortune.wealth + '%';
+            document.getElementById('wealthValue').textContent = fortune.wealth;
+            
+            document.getElementById('guiRen').textContent = fortune.guiRen;
+            document.getElementById('luckyNum').textContent = fortune.luckyNum;
+            document.getElementById('luckyColor').textContent = fortune.luckyColor;
+            document.getElementById('xiShen').textContent = fortune.xiShen;
+            document.getElementById('yiContent').innerHTML = fortune.yi;
+            document.getElementById('jiContent').innerHTML = fortune.ji;
+            document.getElementById('fortuneQuote').textContent = fortune.quote;
+            
+            document.getElementById('fortuneModal').classList.remove('hidden');
+        }
+
+        // ========== 事件绑定 ==========
+        function bindEvents() {
+            feedRing.addEventListener('click', feedAction);
+            drinkRing.addEventListener('click', drinkAction);
+            
+            sleepRing.addEventListener('click', () => {
+                if (state.isSleeping) {
+                    wakeUp(false);
+                } else {
+                    if (canGoToSleep()) {
+                        goToSleep(false);
+                    } else {
+                        showSleepStatus('⏰ 还不能睡觉哦，21:00后才可以~');
+                    }
+                }
+            });
+            
+            canvas.addEventListener('click', playAction);
+            
+            canvas.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                state.mousePos.x = (e.clientX - rect.left) * (CONFIG.CANVAS_SIZE / rect.width);
+                state.mousePos.y = (e.clientY - rect.top) * (CONFIG.CANVAS_SIZE / rect.height);
+                state.isLookingAtMouse = true;
+            });
+            
+            canvas.addEventListener('mouseleave', () => {
+                state.isLookingAtMouse = false;
+            });
+            
+            document.getElementById('fortuneBtn').addEventListener('click', showFortuneModal);
+            
+            document.getElementById('closeModalBtn').addEventListener('click', () => {
+                document.getElementById('fortuneModal').classList.add('hidden');
+            });
+            
+            document.getElementById('fortuneModal').addEventListener('click', (e) => {
+                if (e.target.id === 'fortuneModal') {
+                    document.getElementById('fortuneModal').classList.add('hidden');
+                }
+            });
+            
+            document.getElementById('exitApp').addEventListener('click', () => {
+                if (confirm('确定要退出福运小猪吗？')) {
+                    window.open('', '_self', '');
+                    window.close();
+                    setTimeout(() => {
+                        window.location.href = 'about:blank';
+                        setTimeout(() => window.close(), 100);
+                    }, 100);
+                }
+            });
+            
+            window.addEventListener('beforeunload', persistState);
+        }
+
+        // ========== 日期显示 ==========
+        function updateDate() {
+            const now = new Date();
+            const lunarMonths = ['正', '二', '三', '四', '五', '六', '七', '八', '九', '十', '冬', '腊'];
+            const month = lunarMonths[now.getMonth()];
+            document.getElementById('auspiciousText').textContent = 
+                `乙巳年 ${month}月${now.getDate()}日 · 宜纳福`;
+        }
+        updateDate();
+
+        // 启动
+        init();
     })();
 </script>
 </body>
