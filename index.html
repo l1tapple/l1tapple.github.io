@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
@@ -27,14 +27,14 @@
         #app {
             position: relative;
             width: 100%;
-            max-width: 450px;
-            height: 900px;
-            max-height: 95vh;
+            max-width: 420px;
+            min-height: 100vh;
+            max-height: 100vh;
             background: 
                 radial-gradient(ellipse at 30% 20%, rgba(139, 90, 43, 0.15) 0%, transparent 50%),
                 radial-gradient(ellipse at 70% 80%, rgba(160, 82, 45, 0.1) 0%, transparent 50%),
                 linear-gradient(180deg, #f5f0e8 0%, #e8e0d0 100%);
-            border-radius: 24px;
+            border-radius: 0;
             box-shadow: 
                 0 25px 50px rgba(0,0,0,0.4),
                 inset 0 0 0 2px rgba(139, 90, 43, 0.3),
@@ -43,6 +43,14 @@
             display: flex;
             flex-direction: column;
             color: #3d2914;
+        }
+
+        @media (min-width: 421px) {
+            #app {
+                border-radius: 24px;
+                max-height: 90vh;
+                margin: auto;
+            }
         }
 
         #app::before {
@@ -65,18 +73,37 @@
         .bubble-pig {
             position: absolute;
             bottom: -80px;
-            opacity: 0.85;
+            opacity: 0;
             filter: drop-shadow(0 4px 8px rgba(139, 90, 43, 0.3));
-            animation: floatUp linear forwards;
+            animation: floatUp ease-out forwards;
             pointer-events: none;
+            will-change: transform, opacity;
         }
 
         @keyframes floatUp {
-            0% { transform: translateY(0) rotate(-5deg) scale(0.7); opacity: 0.8; }
-            25% { transform: translateY(-30vh) rotate(5deg) scale(0.9); opacity: 0.9; }
-            50% { transform: translateY(-60vh) rotate(-3deg) scale(1); opacity: 0.85; }
-            75% { transform: translateY(-90vh) rotate(3deg) scale(1.05); opacity: 0.6; }
-            100% { transform: translateY(-130vh) rotate(0deg) scale(1.1); opacity: 0; }
+            0% { 
+                transform: translateY(0) translateX(0) rotate(0deg) scale(0.5); 
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.9;
+            }
+            25% { 
+                transform: translateY(-25vh) translateX(var(--sway-1, 20px)) rotate(var(--rot-1, -8deg)) scale(0.85); 
+                opacity: 0.95;
+            }
+            50% { 
+                transform: translateY(-50vh) translateX(var(--sway-2, -15px)) rotate(var(--rot-2, 5deg)) scale(1); 
+                opacity: 0.9;
+            }
+            75% { 
+                transform: translateY(-75vh) translateX(var(--sway-3, 25px)) rotate(var(--rot-3, -3deg)) scale(1.05); 
+                opacity: 0.6;
+            }
+            100% { 
+                transform: translateY(-110vh) translateX(var(--sway-4, 0px)) rotate(var(--rot-4, 0deg)) scale(1.1); 
+                opacity: 0;
+            }
         }
 
         #main-interface {
@@ -85,10 +112,12 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            padding: 20px 18px 14px;
+            padding: 0;
             opacity: 0;
-            transition: opacity 1.5s ease;
+            transition: opacity 1.2s ease;
             pointer-events: none;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
         #main-interface.show {
@@ -125,13 +154,14 @@
 
         .header-section {
             text-align: center;
-            margin-bottom: 14px;
-            padding: 12px 16px;
+            margin: 12px 16px 10px;
+            padding: 10px 14px;
             background: 
                 linear-gradient(135deg, rgba(139, 90, 43, 0.08) 0%, rgba(160, 82, 45, 0.05) 100%);
             border-radius: 16px;
             border: 1px solid rgba(139, 90, 43, 0.2);
             position: relative;
+            flex-shrink: 0;
         }
         .header-section::before,
         .header-section::after {
@@ -147,21 +177,21 @@
 
         .auspicious-day {
             font-family: 'Ma Shan Zheng', cursive;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 400;
             color: #5d3a1a;
-            letter-spacing: 6px;
+            letter-spacing: 4px;
             text-shadow: 1px 1px 2px rgba(139, 90, 43, 0.2);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
         
         .weather-panel {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 20px;
-            padding: 10px 16px;
-            font-size: 14px;
+            gap: 16px;
+            padding: 6px 12px;
+            font-size: 13px;
             color: #6b4423;
         }
         .weather-item {
@@ -173,23 +203,24 @@
         .fortune-area {
             display: flex;
             justify-content: center;
-            margin: 10px 0 12px;
+            margin: 8px 0 10px;
+            flex-shrink: 0;
         }
         .fortune-btn {
             background: 
                 linear-gradient(135deg, rgba(139, 90, 43, 0.15) 0%, rgba(160, 82, 45, 0.1) 100%);
             border: 2px solid #8b5a2b;
             border-radius: 50px;
-            padding: 14px 40px;
+            padding: 12px 32px;
             font-family: 'Ma Shan Zheng', cursive;
-            font-size: 26px;
+            font-size: 22px;
             color: #5d3a1a;
             box-shadow: 
                 0 6px 16px rgba(139, 90, 43, 0.2),
                 inset 0 1px 2px rgba(255,255,255,0.5);
             cursor: pointer;
             transition: all 0.3s ease;
-            letter-spacing: 12px;
+            letter-spacing: 8px;
             position: relative;
             overflow: hidden;
         }
@@ -213,14 +244,16 @@
             flex-direction: column;
             background: 
                 radial-gradient(ellipse at 50% 30%, rgba(245, 240, 230, 0.8) 0%, rgba(232, 224, 208, 0.6) 100%);
-            border-radius: 32px;
-            padding: 20px 14px 14px;
+            border-radius: 24px 24px 0 0;
+            padding: 16px 14px 12px;
             border: 2px solid rgba(139, 90, 43, 0.25);
+            border-bottom: none;
             box-shadow: 
                 inset 0 2px 8px rgba(139, 90, 43, 0.1),
                 0 8px 24px rgba(0,0,0,0.1);
-            margin-top: 8px;
+            margin: 0 8px;
             position: relative;
+            min-height: 0;
         }
         .pet-section::before {
             content: '';
@@ -233,12 +266,14 @@
         }
 
         .pet-canvas-container {
-            flex: 2;
+            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 220px;
+            min-height: 200px;
+            max-height: 300px;
             position: relative;
+            padding: 10px;
         }
 
         .pet-base {
@@ -250,26 +285,28 @@
         }
 
         canvas#petCanvas {
-            width: 100%;
-            max-width: 320px;
-            height: auto;
-            aspect-ratio: 1/1;
+            width: 260px;
+            height: 260px;
+            max-width: 100%;
+            max-height: 100%;
             image-rendering: crisp-edges;
             filter: drop-shadow(0 12px 20px rgba(139, 90, 43, 0.25));
             cursor: pointer;
             position: relative;
             z-index: 10;
+            object-fit: contain;
         }
 
         .happiness-bar-wrap {
-            margin: 12px 16px 6px;
-            height: 14px;
+            margin: 10px 20px 6px;
+            height: 12px;
             background: 
                 linear-gradient(180deg, #d4c4a8 0%, #c4b498 100%);
             border-radius: 20px;
             overflow: hidden;
             border: 2px solid #8b5a2b;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.15);
+            flex-shrink: 0;
         }
         #happinessFill {
             width: 80%;
@@ -290,13 +327,15 @@
 
         .action-rings {
             display: flex;
-            justify-content: space-around;
+            justify-content: center;
             align-items: center;
-            margin: 16px 0 8px;
+            gap: 24px;
+            margin: 12px 0 6px;
+            flex-shrink: 0;
         }
         .ring-item {
-            width: 72px;
-            height: 72px;
+            width: 60px;
+            height: 60px;
             background: 
                 radial-gradient(circle at 30% 30%, rgba(245, 240, 230, 0.95), rgba(232, 224, 208, 0.9));
             border-radius: 50%;
@@ -307,10 +346,11 @@
             box-shadow: 
                 0 6px 16px rgba(139, 90, 43, 0.25),
                 inset 0 2px 4px rgba(255,255,255,0.6);
-            font-size: 32px;
+            font-size: 28px;
             cursor: pointer;
             transition: all 0.25s ease;
             position: relative;
+            flex-shrink: 0;
         }
         .ring-item::before {
             content: '';
@@ -338,13 +378,15 @@
         }
 
         .pet-tip {
-            font-size: 13px; 
+            font-size: 12px; 
             text-align: center; 
             color: #6b4423;
             opacity: 0.85;
-            margin-top: 6px;
+            margin-top: 4px;
+            margin-bottom: 8px;
             font-family: 'Ma Shan Zheng', cursive;
             letter-spacing: 2px;
+            flex-shrink: 0;
         }
 
         .offline-notice {
@@ -827,7 +869,10 @@
                 tailWag: 0,
                 earTwitch: 0,
                 snore: 0,
-                heartFloat: 0
+                heartFloat: 0,
+                standing: 0,   // 站立动画
+                lying: 0,      // 趴下动画
+                sideLying: 0   // 侧躺动画
             },
             mousePos: { x: 0, y: 0 },
             isLookingAtMouse: false,
@@ -852,6 +897,7 @@
             drawPig();
             bindEvents();
             persistState();
+            startIdleCheck();
             
             // 定时检查
             setInterval(checkTimeBasedEvents, 30000);
@@ -922,6 +968,13 @@
         function goToSleep(isAuto = false) {
             if (state.isSleeping) return;
             
+            // 重置其他姿态
+            state.animation.standing = 0;
+            state.animation.lying = 0;
+            state.animation.sideLying = 0;
+            state.animation.eating = 0;
+            state.animation.drinking = 0;
+            
             state.isSleeping = true;
             state.sleepStartTime = Date.now();
             state.animation.sleeping = 1;
@@ -952,7 +1005,10 @@
             
             state.isSleeping = false;
             state.sleepStartTime = null;
+            state.animation.sleeping = 0;
             state.animation.bounce = 2;
+            state.animation.tailWag = 6;
+            state.animation.earTwitch = 1.5;
             modifyHappiness(20, !isAuto);
             persistState();
             updateSleepUI();
@@ -960,6 +1016,36 @@
             if (!isAuto) {
                 showOfflineNotice('☀️ 小猪起床啦！精神满满！');
             }
+        }
+
+        // ========== 闲置检测 ==========
+        let idleCheckInterval;
+        function startIdleCheck() {
+            idleCheckInterval = setInterval(() => {
+                if (state.isSleeping) return;
+                
+                const idleTime = (Date.now() - state.lastInteractionTime) / 1000;
+                
+                // 15秒无互动 - 趴下休息
+                if (idleTime > 15 && idleTime <= 30 && state.animation.lying === 0 && state.animation.sideLying === 0) {
+                    if (state.happiness < 40) {
+                        // 不开心时侧躺
+                        state.animation.sideLying = 1;
+                        state.animation.standing = 0;
+                    } else {
+                        // 正常趴下
+                        state.animation.lying = 1;
+                        state.animation.standing = 0;
+                    }
+                }
+                
+                // 30秒无互动 - 侧躺（如果还没躺下）
+                if (idleTime > 30 && state.animation.sideLying === 0) {
+                    state.animation.sideLying = 1;
+                    state.animation.lying = 0;
+                    state.animation.standing = 0;
+                }
+            }, 1000);
         }
 
         function updateSleepUI() {
@@ -1046,424 +1132,144 @@
         function startBubbleShow() {
             const bubbleLayer = document.getElementById('bubble-layer');
             const mainUI = document.getElementById('main-interface');
-            const pigEmojis = ['🐷', '🐽', '🐖', '🌸', '✨', '💕', '🌙', '☁'];
+            const pigEmojis = ['🐷', '🐽', '🐖', '🌸', '✨', '💕', '🌙', '☁', '🎋', '🏮', '🧧', '🥮'];
             
-            for (let i = 0; i < 60; i++) {
-                setTimeout(() => {
-                    const pig = document.createElement('div');
-                    pig.className = 'bubble-pig';
-                    pig.textContent = pigEmojis[Math.floor(Math.random() * pigEmojis.length)];
-                    pig.style.left = Math.random() * 95 + 2 + '%';
-                    pig.style.animationDuration = (4 + Math.random() * 5) + 's';
-                    pig.style.fontSize = (24 + Math.floor(Math.random() * 44)) + 'px';
-                    bubbleLayer.appendChild(pig);
-                    setTimeout(() => pig.remove(), 12000);
-                }, i * 50);
+            // 创建波浪式分布的气泡
+            const waveCount = 4;
+            const itemsPerWave = 12;
+            const totalItems = waveCount * itemsPerWave;
+            
+            for (let wave = 0; wave < waveCount; wave++) {
+                for (let i = 0; i < itemsPerWave; i++) {
+                    const index = wave * itemsPerWave + i;
+                    const delay = wave * 400 + i * 80 + Math.random() * 100;
+                    
+                    setTimeout(() => {
+                        const pig = document.createElement('div');
+                        pig.className = 'bubble-pig';
+                        pig.textContent = pigEmojis[Math.floor(Math.random() * pigEmojis.length)];
+                        
+                        // 波浪式水平分布
+                        const waveOffset = (i / itemsPerWave) * 90 + 5;
+                        const randomOffset = (Math.random() - 0.5) * 15;
+                        pig.style.left = Math.max(2, Math.min(95, waveOffset + randomOffset)) + '%';
+                        
+                        // 随机动画参数
+                        const duration = 5 + Math.random() * 3;
+                        pig.style.animationDuration = duration + 's';
+                        pig.style.fontSize = (20 + Math.floor(Math.random() * 36)) + 'px';
+                        
+                        // 设置CSS变量用于动画中的摆动
+                        const sway1 = (Math.random() - 0.5) * 60;
+                        const sway2 = (Math.random() - 0.5) * 80;
+                        const sway3 = (Math.random() - 0.5) * 60;
+                        const rot1 = -10 + Math.random() * 20;
+                        const rot2 = -8 + Math.random() * 16;
+                        const rot3 = -6 + Math.random() * 12;
+                        const rot4 = -5 + Math.random() * 10;
+                        
+                        pig.style.setProperty('--sway-1', sway1 + 'px');
+                        pig.style.setProperty('--sway-2', sway2 + 'px');
+                        pig.style.setProperty('--sway-3', sway3 + 'px');
+                        pig.style.setProperty('--sway-4', (Math.random() - 0.5) * 40 + 'px');
+                        pig.style.setProperty('--rot-1', rot1 + 'deg');
+                        pig.style.setProperty('--rot-2', rot2 + 'deg');
+                        pig.style.setProperty('--rot-3', rot3 + 'deg');
+                        pig.style.setProperty('--rot-4', rot4 + 'deg');
+                        
+                        bubbleLayer.appendChild(pig);
+                        setTimeout(() => pig.remove(), (duration + 1) * 1000);
+                    }, delay);
+                }
             }
             
-            setTimeout(() => mainUI.classList.add('show'), 3500);
+            // 主界面在动画进行到一半时渐显
+            setTimeout(() => mainUI.classList.add('show'), 2000);
         }
 
-        // ========== 精致Q版小猪绘制 ==========
+        // ========== 超萌小猪绘制（优化版）==========
         function drawPig() {
             state.frameCount++;
             ctx.clearRect(0, 0, CONFIG.CANVAS_SIZE, CONFIG.CANVAS_SIZE);
             
             const centerX = CONFIG.CANVAS_SIZE / 2;
-            const centerY = CONFIG.CANVAS_SIZE / 2 + 30;
+            const centerY = CONFIG.CANVAS_SIZE / 2 + 20;
             const time = Date.now() / 1000;
             
-            // 呼吸动画 - 更自然
-            const breathe = Math.sin(time * 1.5) * 1.5;
-            const microBreathe = Math.sin(time * 4) * 0.3;
+            // 计算闲置时间
+            const idleTime = (Date.now() - state.lastInteractionTime) / 1000;
             
-            // 弹跳动画
-            const bounce = state.animation.bounce > 0 ? 
-                state.animation.bounce * Math.sin(time * 20) * 8 : 0;
+            // 确定当前姿态
+            let pose = 'normal'; // normal, standing, lying, side, eating, drinking
+            if (state.isSleeping) pose = 'sleeping';
+            else if (state.animation.eating > 0.3) pose = 'eating';
+            else if (state.animation.drinking > 0.3) pose = 'drinking';
+            else if (state.animation.standing > 0) pose = 'standing';
+            else if (state.animation.lying > 0) pose = 'lying';
+            else if (state.animation.sideLying > 0) pose = 'side';
+            else if (idleTime > 10 && state.happiness < 50) pose = 'side';
+            else if (idleTime > 15) pose = 'lying';
+            
+            // 呼吸动画 - 更自然的节奏
+            const breathe = Math.sin(time * (pose === 'sleeping' ? 0.6 : 1.2)) * (pose === 'sleeping' ? 1.5 : 1);
+            const microBreathe = Math.sin(time * 3) * 0.2;
+            
+            // 弹跳动画 - 更有弹性
+            let bounce = 0;
+            if (state.animation.bounce > 0) {
+                const bouncePhase = (time * 15) % (Math.PI * 2);
+                bounce = state.animation.bounce * Math.sin(bouncePhase) * 8 * Math.exp(-bouncePhase / 3);
+            }
             
             // 确定表情
             let expression = 'happy';
-            if (state.isSleeping) expression = 'sleeping';
-            else if (state.happiness > 75) expression = 'happy';
-            else if (state.happiness > 50) expression = 'content';
-            else if (state.happiness > 25) expression = 'sad';
+            if (pose === 'sleeping') expression = 'sleeping';
+            else if (state.happiness > 80) expression = 'excited';
+            else if (state.happiness > 60) expression = 'happy';
+            else if (state.happiness > 40) expression = 'content';
+            else if (state.happiness > 20) expression = 'sad';
             else expression = 'angry';
 
+            // 根据姿态调整绘制
             ctx.save();
-            ctx.translate(centerX, centerY + bounce);
-
-            // ========== 卷尾巴（带摇摆动画）==========
-            const tailWagBase = Math.sin(time * 2) * 0.15;
-            const tailWagExcited = state.animation.tailWag > 0 ? 
-                Math.sin(time * 15) * state.animation.tailWag * 0.3 : 0;
-            const tailWag = tailWagBase + tailWagExcited;
             
-            ctx.save();
-            ctx.translate(95, -5);
-            ctx.rotate(tailWag);
-            ctx.beginPath();
-            ctx.moveTo(0, 0);
-            ctx.bezierCurveTo(18, -18, 42, -12, 36, 12);
-            ctx.bezierCurveTo(30, 30, 12, 24, 6, 12);
-            ctx.strokeStyle = '#8b5a5a';
-            ctx.lineWidth = 5;
-            ctx.lineCap = 'round';
-            ctx.stroke();
-            // 尾巴高光
-            ctx.strokeStyle = '#ffb6c1';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            ctx.restore();
-
-            // ========== 后腿（更圆润）==========
-            const legGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, 30);
-            legGrad.addColorStop(0, '#ffd5dc');
-            legGrad.addColorStop(1, '#ffb6c1');
-            ctx.fillStyle = legGrad;
-            ctx.strokeStyle = '#8b5a5a';
-            ctx.lineWidth = 2.5;
-            
-            // 左后腿
-            ctx.beginPath();
-            ctx.ellipse(-55, 70, 22, 30, 0.25, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
-            // 脚掌
-            ctx.fillStyle = '#ffaeb9';
-            ctx.beginPath();
-            ctx.ellipse(-58, 85, 12, 8, 0, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.fillStyle = legGrad;
-            // 右后腿
-            ctx.beginPath();
-            ctx.ellipse(55, 70, 22, 30, -0.25, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
-            // 脚掌
-            ctx.fillStyle = '#ffaeb9';
-            ctx.beginPath();
-            ctx.ellipse(58, 85, 12, 8, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            // ========== 身体（更精致）==========
-            const bodyScale = 1 + (breathe + microBreathe) * 0.005;
-            ctx.save();
-            ctx.scale(bodyScale, bodyScale);
-            
-            const bodyGrad = ctx.createRadialGradient(-35, -50, 0, 0, 5, 100);
-            bodyGrad.addColorStop(0, '#fff0f3');
-            bodyGrad.addColorStop(0.3, '#ffe4e9');
-            bodyGrad.addColorStop(0.7, '#ffc0cb');
-            bodyGrad.addColorStop(1, '#ffb6c1');
-            
-            ctx.fillStyle = bodyGrad;
-            ctx.beginPath();
-            ctx.ellipse(0, 15, 95, 78, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.strokeStyle = '#8b5a5a';
-            ctx.lineWidth = 3;
-            ctx.stroke();
-            
-            // 身体阴影
-            ctx.fillStyle = 'rgba(139, 90, 90, 0.1)';
-            ctx.beginPath();
-            ctx.ellipse(0, 75, 70, 15, 0, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // 身体高光
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-            ctx.beginPath();
-            ctx.ellipse(-40, -30, 30, 22, -0.4, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.restore();
-
-            // ========== 前腿 ==========
-            ctx.fillStyle = legGrad;
-            // 左前腿
-            ctx.beginPath();
-            ctx.ellipse(-42, 82, 20, 28, 0.15, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
-            ctx.fillStyle = '#ffaeb9';
-            ctx.beginPath();
-            ctx.ellipse(-45, 95, 14, 10, 0, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.fillStyle = legGrad;
-            // 右前腿
-            ctx.beginPath();
-            ctx.ellipse(42, 82, 20, 28, -0.15, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
-            ctx.fillStyle = '#ffaeb9';
-            ctx.beginPath();
-            ctx.ellipse(45, 95, 14, 10, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            // ========== 头部（带微动）==========
-            const headY = -45 + Math.sin(time * 1.2) * 1.5;
-            const headTilt = Math.sin(time * 0.8) * 0.02;
-            
-            ctx.save();
-            ctx.rotate(headTilt);
-            
-            const headGrad = ctx.createRadialGradient(-30, headY - 40, 0, 0, headY, 82);
-            headGrad.addColorStop(0, '#fff5f7');
-            headGrad.addColorStop(0.4, '#ffe4e9');
-            headGrad.addColorStop(0.8, '#ffc0cb');
-            headGrad.addColorStop(1, '#ffb6c1');
-            
-            ctx.fillStyle = headGrad;
-            ctx.beginPath();
-            ctx.arc(0, headY, 80, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.strokeStyle = '#8b5a5a';
-            ctx.lineWidth = 3;
-            ctx.stroke();
-
-            // ========== 耳朵（带抽动动画）==========
-            const earTwitch = state.animation.earTwitch > 0 ? 
-                Math.sin(time * 30) * state.animation.earTwitch * 0.15 : 0;
-            
-            // 左耳
-            ctx.save();
-            ctx.translate(-58, headY - 52);
-            ctx.rotate(-0.35 + earTwitch);
-            ctx.fillStyle = '#ffb6c1';
-            ctx.beginPath();
-            ctx.ellipse(0, 0, 26, 38, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
-            ctx.fillStyle = '#ffaeb9';
-            ctx.beginPath();
-            ctx.ellipse(0, 5, 15, 22, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
-            
-            // 右耳
-            ctx.save();
-            ctx.translate(58, headY - 52);
-            ctx.rotate(0.35 - earTwitch);
-            ctx.fillStyle = '#ffb6c1';
-            ctx.beginPath();
-            ctx.ellipse(0, 0, 26, 38, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
-            ctx.fillStyle = '#ffaeb9';
-            ctx.beginPath();
-            ctx.ellipse(0, 5, 15, 22, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
-
-            // ========== 腮红（更自然）==========
-            const blushOpacity = expression === 'happy' || expression === 'content' ? 0.5 : 0.25;
-            const blushGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, 20);
-            blushGrad.addColorStop(0, `rgba(255, 182, 193, ${blushOpacity})`);
-            blushGrad.addColorStop(1, `rgba(255, 182, 193, 0)`);
-            ctx.fillStyle = blushGrad;
-            ctx.beginPath();
-            ctx.ellipse(-52, headY + 8, 22, 16, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.ellipse(52, headY + 8, 22, 16, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            // ========== 眼睛（更精致）==========
-            const blinkPhase = (time * 2.5) % 10;
-            const isBlinking = blinkPhase > 9.2 || state.animation.blink > 0;
-            
-            if (expression === 'sleeping') {
-                // 睡觉闭眼 - 带呼吸感的弧线
-                ctx.strokeStyle = '#5d3a1a';
-                ctx.lineWidth = 3.5;
-                ctx.lineCap = 'round';
-                const sleepBreath = Math.sin(time * 0.8) * 1;
-                ctx.beginPath();
-                ctx.arc(-35, headY - 10 + sleepBreath, 12, 0.3, Math.PI - 0.3);
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.arc(35, headY - 10 + sleepBreath, 12, 0.3, Math.PI - 0.3);
-                ctx.stroke();
-                
-                // 睡觉符号动画
-                const snoreY = Math.sin(time * 2) * 3;
-                ctx.font = 'bold 28px serif';
-                ctx.fillStyle = `rgba(107, 142, 159, ${0.6 + Math.sin(time * 3) * 0.3})`;
-                ctx.fillText('💤', 70, headY - 55 + snoreY);
-                
-                // 鼻涕泡
-                const bubbleSize = 8 + Math.sin(time * 1.5) * 3;
-                ctx.fillStyle = 'rgba(200, 230, 255, 0.6)';
-                ctx.strokeStyle = 'rgba(150, 200, 230, 0.5)';
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.arc(25, headY + 5, bubbleSize, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-                ctx.beginPath();
-                ctx.arc(22, headY + 2, 3, 0, Math.PI * 2);
-                ctx.fill();
-            } else if (isBlinking) {
-                // 眨眼
-                ctx.strokeStyle = '#5d3a1a';
-                ctx.lineWidth = 3.5;
-                ctx.lineCap = 'round';
-                ctx.beginPath();
-                ctx.moveTo(-50, headY - 10);
-                ctx.quadraticCurveTo(-35, headY - 5, -20, headY - 10);
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.moveTo(20, headY - 10);
-                ctx.quadraticCurveTo(35, headY - 5, 50, headY - 10);
-                ctx.stroke();
+            if (pose === 'lying' || pose === 'side') {
+                // 趴下/侧躺姿态 - 更圆润的压扁效果
+                ctx.translate(centerX, centerY + 55);
+                ctx.scale(1.3, 0.5);
+                drawCutePigBody(pose, expression, time, breathe, microBreathe, bounce, 0);
+            } else if (pose === 'standing') {
+                // 站立姿态 - 更有活力的身体
+                const standBounce = Math.sin(time * 6) * 4 * state.animation.standing;
+                ctx.translate(centerX, centerY - standBounce - 15);
+                ctx.scale(0.9, 1.15);
+                drawCutePigBody(pose, expression, time, breathe, microBreathe, bounce, state.animation.standing);
+            } else if (pose === 'eating' || pose === 'drinking') {
+                // 低头进食/喝水
+                ctx.translate(centerX, centerY + 20);
+                ctx.rotate(0.25);
+                drawCutePigBody(pose, expression, time, breathe, microBreathe, bounce, 0);
             } else {
-                // 睁眼 - 带高光和眼神追踪
-                ctx.fillStyle = '#3d2914';
-                
-                let eyeOffsetX = 0, eyeOffsetY = 0;
-                if (state.isLookingAtMouse && !state.isSleeping) {
-                    const dx = state.mousePos.x - centerX;
-                    const dy = state.mousePos.y - centerY;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist > 0) {
-                        eyeOffsetX = Math.min(Math.max(dx / dist * 5, -4), 4);
-                        eyeOffsetY = Math.min(Math.max(dy / dist * 3, -3), 3);
-                    }
-                }
-                
-                // 左眼
-                ctx.beginPath();
-                ctx.arc(-35 + eyeOffsetX, headY - 12 + eyeOffsetY, 12, 0, Math.PI * 2);
-                ctx.fill();
-                // 右眼
-                ctx.beginPath();
-                ctx.arc(35 + eyeOffsetX, headY - 12 + eyeOffsetY, 12, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // 眼睛高光（更精致）
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-                ctx.beginPath();
-                ctx.arc(-40 + eyeOffsetX, headY - 16 + eyeOffsetY, 5, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.beginPath();
-                ctx.arc(30 + eyeOffsetX, headY - 16 + eyeOffsetY, 5, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // 小高光点
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-                ctx.beginPath();
-                ctx.arc(-30 + eyeOffsetX, headY - 8 + eyeOffsetY, 2.5, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.beginPath();
-                ctx.arc(40 + eyeOffsetX, headY - 8 + eyeOffsetY, 2.5, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // 眉毛
-                ctx.strokeStyle = '#8b5a5a';
-                ctx.lineWidth = 2.5;
-                ctx.lineCap = 'round';
-                if (expression === 'angry') {
-                    ctx.beginPath();
-                    ctx.moveTo(-55, headY - 30);
-                    ctx.lineTo(-22, headY - 22);
-                    ctx.stroke();
-                    ctx.beginPath();
-                    ctx.moveTo(55, headY - 30);
-                    ctx.lineTo(22, headY - 22);
-                    ctx.stroke();
-                } else if (expression === 'sad') {
-                    ctx.beginPath();
-                    ctx.moveTo(-52, headY - 25);
-                    ctx.lineTo(-20, headY - 20);
-                    ctx.stroke();
-                    ctx.beginPath();
-                    ctx.moveTo(52, headY - 25);
-                    ctx.lineTo(20, headY - 20);
-                    ctx.stroke();
-                } else if (expression === 'happy' || expression === 'content') {
-                    ctx.beginPath();
-                    ctx.moveTo(-52, headY - 22);
-                    ctx.quadraticCurveTo(-35, headY - 32, -18, headY - 22);
-                    ctx.stroke();
-                    ctx.beginPath();
-                    ctx.moveTo(18, headY - 22);
-                    ctx.quadraticCurveTo(35, headY - 32, 52, headY - 22);
-                    ctx.stroke();
-                }
+                // 正常姿态 - 轻微摇摆
+                const idleSway = Math.sin(time * 0.8) * 2;
+                ctx.translate(centerX + idleSway, centerY + bounce);
+                drawCutePigBody(pose, expression, time, breathe, microBreathe, bounce, 0);
             }
-
-            // ========== 鼻子（更立体）==========
-            const noseGrad = ctx.createRadialGradient(-5, headY + 12, 0, 0, headY + 18, 25);
-            noseGrad.addColorStop(0, '#ffcdd5');
-            noseGrad.addColorStop(1, '#ffaeb9');
-            ctx.fillStyle = noseGrad;
-            ctx.beginPath();
-            ctx.ellipse(0, headY + 18, 26, 20, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.strokeStyle = '#c47a7a';
-            ctx.lineWidth = 2;
-            ctx.stroke();
             
-            // 鼻孔
-            ctx.fillStyle = '#7a4a4a';
-            ctx.beginPath();
-            ctx.ellipse(-9, headY + 18, 5, 7, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.ellipse(9, headY + 18, 5, 7, 0, 0, Math.PI * 2);
-            ctx.fill();
-            // 鼻孔高光
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-            ctx.beginPath();
-            ctx.arc(-11, headY + 15, 2, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(7, headY + 15, 2, 0, Math.PI * 2);
-            ctx.fill();
-
-            // ========== 嘴巴 ==========
-            ctx.strokeStyle = '#8b5a5a';
-            ctx.lineWidth = 2.5;
-            ctx.lineCap = 'round';
-            if (expression === 'happy' || expression === 'content') {
-                ctx.beginPath();
-                ctx.arc(0, headY + 42, 14, 0.2, Math.PI - 0.2);
-                ctx.stroke();
-                // 舌头
-                ctx.fillStyle = '#ff9999';
-                ctx.beginPath();
-                ctx.ellipse(0, headY + 50, 6, 4, 0, 0, Math.PI * 2);
-                ctx.fill();
-            } else if (expression === 'sad') {
-                ctx.beginPath();
-                ctx.arc(0, headY + 55, 12, Math.PI + 0.3, -0.3);
-                ctx.stroke();
-            } else if (expression === 'sleeping') {
-                ctx.beginPath();
-                ctx.arc(0, headY + 42, 14, 0.2, Math.PI - 0.2);
-                ctx.stroke();
-            } else {
-                ctx.beginPath();
-                ctx.moveTo(-10, headY + 45);
-                ctx.lineTo(10, headY + 45);
-                ctx.stroke();
-            }
-
             ctx.restore();
 
-            // ========== 特效绘制 ==========
-            if (state.animation.eating > 0) drawEatingEffect();
-            if (state.animation.drinking > 0) drawDrinkingEffect();
-            if (state.animation.playing > 0) drawPlayingEffect();
-            if (state.animation.heartFloat > 0) drawHeartEffect();
+            // 绘制特效
+            if (state.animation.eating > 0) drawEatingEffect(centerX + 80, centerY - 20);
+            if (state.animation.drinking > 0) drawDrinkingEffect(centerX + 80, centerY - 20);
+            if (state.animation.playing > 0) drawPlayingEffect(centerX, centerY);
+            if (state.animation.heartFloat > 0) drawHeartEffect(centerX, centerY - 60);
+            if (pose === 'sleeping') drawSleepEffect(centerX - 60, centerY - 80, time);
+            if (pose === 'standing') drawExcitedEffect(centerX, centerY - 100, time);
 
             // 动画衰减
             Object.keys(state.animation).forEach(key => {
-                if (state.animation[key] > 0 && key !== 'sleeping') {
-                    state.animation[key] *= 0.96;
+                if (state.animation[key] > 0 && !['sleeping'].includes(key)) {
+                    state.animation[key] *= 0.985;
                     if (state.animation[key] < 0.01) state.animation[key] = 0;
                 }
             });
@@ -1471,27 +1277,648 @@
             requestAnimationFrame(drawPig);
         }
 
-        // ========== 特效绘制 ==========
-        function drawEatingEffect() {
-            const alpha = state.animation.eating;
-            const foods = ['🍰', '🍪', '🧁', '🥕', '🍎', '🥬'];
-            const food = foods[Math.floor(Date.now() / 800) % foods.length];
-            const y = 100 - alpha * 50;
+        // 绘制超萌小猪身体（优化版）
+        function drawCutePigBody(pose, expression, time, breathe, microBreathe, bounce, standIntensity) {
+            const isSleeping = pose === 'sleeping';
+            const isLying = pose === 'lying' || pose === 'side';
+            const isStanding = pose === 'standing';
+            const isEating = pose === 'eating' || pose === 'drinking';
+            
+            // 尾巴摇摆计算 - 更自然的摆动
+            const tailWagBase = Math.sin(time * (isSleeping ? 0.4 : 1.8)) * 0.08;
+            const tailWagExcited = state.animation.tailWag > 0 ? 
+                Math.sin(time * 10 + Math.sin(time * 3) * 0.5) * state.animation.tailWag * 0.2 : 0;
+            const tailWag = tailWagBase + tailWagExcited;
+            
+            // ========== 卷尾巴（更Q弹）==========
+            ctx.save();
+            ctx.translate(isLying ? 115 : 98, isLying ? -15 : 0);
+            ctx.rotate(tailWag + (isLying ? 0.4 : 0));
+            
+            // 尾巴主体 - 更粗更可爱
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.bezierCurveTo(18, -22, 42, -18, 38, 12);
+            ctx.bezierCurveTo(34, 35, 14, 30, 6, 16);
+            ctx.strokeStyle = '#a06060';
+            ctx.lineWidth = 7;
+            ctx.lineCap = 'round';
+            ctx.stroke();
+            
+            // 尾巴内侧
+            ctx.beginPath();
+            ctx.moveTo(1, 1);
+            ctx.bezierCurveTo(16, -18, 38, -15, 34, 10);
+            ctx.strokeStyle = '#ffc0cb';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+            
+            // 尾巴尖小卷 - 更圆润
+            ctx.beginPath();
+            ctx.arc(6, 16, 5, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffc0cb';
+            ctx.fill();
+            ctx.strokeStyle = '#a06060';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.restore();
+
+            // ========== 后腿（更圆润）==========
+            const legGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, 28);
+            legGrad.addColorStop(0, '#ffe0e6');
+            legGrad.addColorStop(0.5, '#ffc0cb');
+            legGrad.addColorStop(1, '#ffb0c0');
+            
+            if (!isLying) {
+                const legOffset = isStanding ? -12 : 0;
+                
+                // 左后腿 - 更圆润
+                ctx.fillStyle = legGrad;
+                ctx.strokeStyle = '#a06060';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.ellipse(-52, 68 + legOffset, 22, isStanding ? 32 : 26, 0.15, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                
+                // 左后脚掌 - 更可爱
+                ctx.fillStyle = '#ffb0c0';
+                ctx.beginPath();
+                ctx.ellipse(-55, 85 + legOffset, 16, 12, 0, 0, Math.PI * 2);
+                ctx.fill();
+                // 脚趾 - 更圆润
+                ctx.fillStyle = '#ffa0b0';
+                for (let i = -1; i <= 1; i++) {
+                    ctx.beginPath();
+                    ctx.arc(-55 + i * 7, 88 + legOffset, 3.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                // 右后腿
+                ctx.fillStyle = legGrad;
+                ctx.beginPath();
+                ctx.ellipse(52, 68 + legOffset, 22, isStanding ? 32 : 26, -0.15, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                
+                // 右后脚掌
+                ctx.fillStyle = '#ffb0c0';
+                ctx.beginPath();
+                ctx.ellipse(55, 85 + legOffset, 16, 12, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#ffa0b0';
+                for (let i = -1; i <= 1; i++) {
+                    ctx.beginPath();
+                    ctx.arc(55 + i * 7, 88 + legOffset, 3.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            } else {
+                // 趴下时的后腿
+                ctx.fillStyle = legGrad;
+                ctx.strokeStyle = '#a06060';
+                ctx.lineWidth = 2.5;
+                
+                ctx.beginPath();
+                ctx.ellipse(-78, 42, 20, 14, -0.25, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.ellipse(78, 42, 20, 14, 0.25, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+            }
+
+            // ========== 身体（更圆润可爱）==========
+            const bodyScale = 1 + (breathe + microBreathe) * 0.003;
+            ctx.save();
+            ctx.scale(bodyScale, bodyScale);
+            
+            // 身体渐变 - 更粉嫩
+            const bodyGrad = ctx.createRadialGradient(-35, -45, 0, 0, 0, 100);
+            bodyGrad.addColorStop(0, '#fff8fa');
+            bodyGrad.addColorStop(0.2, '#ffeef2');
+            bodyGrad.addColorStop(0.5, '#ffd8e0');
+            bodyGrad.addColorStop(0.8, '#ffc0cb');
+            bodyGrad.addColorStop(1, '#ffb0c0');
+            
+            ctx.fillStyle = bodyGrad;
+            ctx.beginPath();
+            ctx.ellipse(0, 8, isLying ? 115 : 95, isLying ? 68 : 78, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#a06060';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            
+            // 身体纹理 - 更淡更可爱
+            ctx.strokeStyle = 'rgba(160, 96, 96, 0.06)';
+            ctx.lineWidth = 1;
+            for (let i = -50; i <= 50; i += 25) {
+                ctx.beginPath();
+                ctx.arc(i, 8, 35, 0.4, Math.PI - 0.4);
+                ctx.stroke();
+            }
+            
+            // 身体阴影
+            ctx.fillStyle = 'rgba(160, 96, 96, 0.1)';
+            ctx.beginPath();
+            ctx.ellipse(0, 75, 70, 14, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 身体高光 - 更明显
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.beginPath();
+            ctx.ellipse(-40, -40, 40, 28, -0.4, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.restore();
+
+            // ========== 前腿（更圆润）==========
+            if (!isLying) {
+                const frontLegOffset = isEating ? 10 : 0;
+                
+                ctx.fillStyle = legGrad;
+                ctx.strokeStyle = '#a06060';
+                
+                // 左前腿
+                ctx.beginPath();
+                ctx.ellipse(-38, 76 + frontLegOffset, 20, isStanding ? 24 : 28, 0.08, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                
+                // 左前脚掌
+                ctx.fillStyle = '#ffb0c0';
+                ctx.beginPath();
+                ctx.ellipse(-41, 93 + frontLegOffset, 14, 11, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#ffa0b0';
+                for (let i = -1; i <= 1; i++) {
+                    ctx.beginPath();
+                    ctx.arc(-41 + i * 6, 96 + frontLegOffset, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                ctx.fillStyle = legGrad;
+                // 右前腿
+                ctx.beginPath();
+                ctx.ellipse(38, 76 + frontLegOffset, 20, isStanding ? 24 : 28, -0.08, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                
+                // 右前脚掌
+                ctx.fillStyle = '#ffb0c0';
+                ctx.beginPath();
+                ctx.ellipse(41, 93 + frontLegOffset, 14, 11, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#ffa0b0';
+                for (let i = -1; i <= 1; i++) {
+                    ctx.beginPath();
+                    ctx.arc(41 + i * 6, 96 + frontLegOffset, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            } else {
+                // 趴下时的前腿
+                ctx.fillStyle = legGrad;
+                ctx.strokeStyle = '#a06060';
+                
+                ctx.beginPath();
+                ctx.ellipse(-68, -28, 18, 12, -0.4, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.ellipse(68, -28, 18, 12, 0.4, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+            }
+
+            // ========== 头部（更大更圆）==========
+            const headBaseY = isLying ? -12 : -48;
+            const headY = headBaseY + Math.sin(time * (isSleeping ? 0.5 : 1)) * (isSleeping ? 1.5 : 1);
+            const headTilt = isEating ? 0.3 : Math.sin(time * 0.6) * 0.015;
             
             ctx.save();
-            ctx.globalAlpha = alpha;
-            ctx.font = '48px serif';
-            ctx.fillText(food, 260, y);
+            ctx.rotate(headTilt);
             
-            // 咀嚼效果
-            ctx.font = '28px serif';
-            ctx.fillStyle = '#ff6b9d';
-            ctx.fillText('😋', 290, y - 25);
-            ctx.fillText('✨', 240, y + 15);
+            // 头部渐变 - 更粉嫩
+            const headGrad = ctx.createRadialGradient(-30, headY - 40, 0, 0, headY, 82);
+            headGrad.addColorStop(0, '#fffafc');
+            headGrad.addColorStop(0.3, '#fff0f3');
+            headGrad.addColorStop(0.65, '#ffd8e0');
+            headGrad.addColorStop(1, '#ffc0cb');
+            
+            ctx.fillStyle = headGrad;
+            ctx.beginPath();
+            ctx.arc(0, headY, 78, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#a06060';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // ========== 耳朵（更圆润可爱）==========
+            const earTwitch = state.animation.earTwitch > 0 ? 
+                Math.sin(time * 20 + Math.sin(time * 8)) * state.animation.earTwitch * 0.1 : 0;
+            
+            // 左耳
+            ctx.save();
+            ctx.translate(-55, headY - 52);
+            ctx.rotate(-0.35 + earTwitch + (isSleeping ? 0.15 : 0));
+            
+            ctx.fillStyle = '#ffc0cb';
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 26, 38, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#a06060';
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
+            
+            ctx.fillStyle = '#ffb0c0';
+            ctx.beginPath();
+            ctx.ellipse(0, 5, 16, 22, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.beginPath();
+            ctx.ellipse(-7, -12, 6, 9, -0.3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+            
+            // 右耳
+            ctx.save();
+            ctx.translate(55, headY - 52);
+            ctx.rotate(0.35 - earTwitch - (isSleeping ? 0.15 : 0));
+            
+            ctx.fillStyle = '#ffc0cb';
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 26, 38, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#a06060';
+            ctx.stroke();
+            
+            ctx.fillStyle = '#ffb0c0';
+            ctx.beginPath();
+            ctx.ellipse(0, 5, 16, 22, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.beginPath();
+            ctx.ellipse(7, -12, 6, 9, 0.3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+
+            // ========== 腮红（更可爱）==========
+            const blushOpacity = (expression === 'happy' || expression === 'excited' || expression === 'content') ? 0.6 : 0.25;
+            const blushGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, 25);
+            blushGrad.addColorStop(0, `rgba(255, 150, 170, ${blushOpacity})`);
+            blushGrad.addColorStop(0.5, `rgba(255, 180, 195, ${blushOpacity * 0.7})`);
+            blushGrad.addColorStop(1, `rgba(255, 180, 195, 0)`);
+            
+            ctx.fillStyle = blushGrad;
+            ctx.beginPath();
+            ctx.ellipse(-52, headY + 8, 22, 16, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(52, headY + 8, 22, 16, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 腮红高光点
+            ctx.fillStyle = 'rgba(255, 230, 235, 0.7)';
+            ctx.beginPath();
+            ctx.arc(-56, headY + 4, 5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(48, headY + 4, 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // ========== 眼睛 ==========
+            drawCuteEyes(expression, headY, time, isSleeping);
+
+            // ========== 鼻子 ==========
+            drawCuteNose(headY);
+
+            // ========== 嘴巴 ==========
+            drawCuteMouth(expression, headY);
+
             ctx.restore();
         }
 
-        function drawDrinkingEffect() {
+        // 绘制眼睛
+        function drawEyes(expression, headY, time, isSleeping) {
+            const blinkPhase = (time * 2.5) % 10;
+            const isBlinking = blinkPhase > 9.3 || state.animation.blink > 0;
+            
+            if (isSleeping) {
+                // 睡觉闭眼
+                ctx.strokeStyle = '#5d3a1a';
+                ctx.lineWidth = 3;
+                ctx.lineCap = 'round';
+                const sleepBreath = Math.sin(time * 0.8) * 1.5;
+                
+                // 左闭眼
+                ctx.beginPath();
+                ctx.arc(-32, headY - 8 + sleepBreath, 14, 0.25, Math.PI - 0.25);
+                ctx.stroke();
+                
+                // 右闭眼
+                ctx.beginPath();
+                ctx.arc(32, headY - 8 + sleepBreath, 14, 0.25, Math.PI - 0.25);
+                ctx.stroke();
+                
+                // 睫毛
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(-42, headY - 12 + sleepBreath);
+                ctx.lineTo(-46, headY - 16 + sleepBreath);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(42, headY - 12 + sleepBreath);
+                ctx.lineTo(46, headY - 16 + sleepBreath);
+                ctx.stroke();
+                
+            } else if (isBlinking) {
+                // 眨眼
+                ctx.strokeStyle = '#5d3a1a';
+                ctx.lineWidth = 3.5;
+                ctx.lineCap = 'round';
+                
+                ctx.beginPath();
+                ctx.moveTo(-48, headY - 8);
+                ctx.quadraticCurveTo(-32, headY - 2, -16, headY - 8);
+                ctx.stroke();
+                
+                ctx.beginPath();
+                ctx.moveTo(16, headY - 8);
+                ctx.quadraticCurveTo(32, headY - 2, 48, headY - 8);
+                ctx.stroke();
+                
+            } else {
+                // 睁眼
+                let eyeOffsetX = 0, eyeOffsetY = 0;
+                if (state.isLookingAtMouse && !isSleeping) {
+                    const dx = state.mousePos.x - CONFIG.CANVAS_SIZE / 2;
+                    const dy = state.mousePos.y - CONFIG.CANVAS_SIZE / 2;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist > 0) {
+                        eyeOffsetX = Math.min(Math.max(dx / dist * 4, -3), 3);
+                        eyeOffsetY = Math.min(Math.max(dy / dist * 2.5, -2), 2);
+                    }
+                }
+                
+                // 眼睛大小根据表情变化
+                const eyeSize = expression === 'excited' ? 14 : (expression === 'sad' ? 10 : 11);
+                
+                // 左眼白
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.ellipse(-32 + eyeOffsetX, headY - 10 + eyeOffsetY, eyeSize + 2, eyeSize + 4, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#8b5a5a';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+                
+                // 右眼白
+                ctx.beginPath();
+                ctx.ellipse(32 + eyeOffsetX, headY - 10 + eyeOffsetY, eyeSize + 2, eyeSize + 4, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                
+                // 左瞳孔
+                ctx.fillStyle = '#3d2914';
+                ctx.beginPath();
+                ctx.arc(-32 + eyeOffsetX, headY - 10 + eyeOffsetY, eyeSize, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // 右瞳孔
+                ctx.beginPath();
+                ctx.arc(32 + eyeOffsetX, headY - 10 + eyeOffsetY, eyeSize, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // 眼睛高光
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+                ctx.beginPath();
+                ctx.arc(-36 + eyeOffsetX, headY - 14 + eyeOffsetY, 4.5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(28 + eyeOffsetX, headY - 14 + eyeOffsetY, 4.5, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // 小高光点
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.beginPath();
+                ctx.arc(-28 + eyeOffsetX, headY - 6 + eyeOffsetY, 2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(36 + eyeOffsetX, headY - 6 + eyeOffsetY, 2, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // 眉毛
+                ctx.strokeStyle = '#8b5a5a';
+                ctx.lineWidth = 2.5;
+                ctx.lineCap = 'round';
+                
+                if (expression === 'angry') {
+                    ctx.beginPath();
+                    ctx.moveTo(-50, headY - 28);
+                    ctx.lineTo(-20, headY - 20);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(50, headY - 28);
+                    ctx.lineTo(20, headY - 20);
+                    ctx.stroke();
+                } else if (expression === 'sad') {
+                    ctx.beginPath();
+                    ctx.moveTo(-48, headY - 22);
+                    ctx.lineTo(-18, headY - 18);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(48, headY - 22);
+                    ctx.lineTo(18, headY - 18);
+                    ctx.stroke();
+                } else if (expression === 'happy' || expression === 'content' || expression === 'excited') {
+                    ctx.beginPath();
+                    ctx.moveTo(-48, headY - 20);
+                    ctx.quadraticCurveTo(-32, headY - 30, -16, headY - 20);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(16, headY - 20);
+                    ctx.quadraticCurveTo(32, headY - 30, 48, headY - 20);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        // 绘制鼻子
+        function drawNose(headY) {
+            // 鼻子渐变
+            const noseGrad = ctx.createRadialGradient(-4, headY + 10, 0, 0, headY + 16, 24);
+            noseGrad.addColorStop(0, '#ffd5dc');
+            noseGrad.addColorStop(0.5, '#ffc0cb');
+            noseGrad.addColorStop(1, '#ffaeb9');
+            
+            ctx.fillStyle = noseGrad;
+            ctx.beginPath();
+            ctx.ellipse(0, headY + 16, 24, 18, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#c47a7a';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // 鼻子高光
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.beginPath();
+            ctx.ellipse(-8, headY + 10, 8, 5, -0.3, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 鼻孔
+            ctx.fillStyle = '#6a3a3a';
+            ctx.beginPath();
+            ctx.ellipse(-8, headY + 18, 4.5, 6, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(8, headY + 18, 4.5, 6, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 鼻孔高光
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.beginPath();
+            ctx.arc(-10, headY + 15, 1.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(6, headY + 15, 1.5, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // 绘制嘴巴
+        function drawMouth(expression, headY) {
+            ctx.strokeStyle = '#8b5a5a';
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = 'round';
+            
+            if (expression === 'happy' || expression === 'excited' || expression === 'content') {
+                // 开心笑
+                ctx.beginPath();
+                ctx.arc(0, headY + 38, 12, 0.15, Math.PI - 0.15);
+                ctx.stroke();
+                
+                // 舌头
+                ctx.fillStyle = '#ff9999';
+                ctx.beginPath();
+                ctx.ellipse(0, headY + 46, 7, 5, 0, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // 舌头中线
+                ctx.strokeStyle = '#e07777';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(0, headY + 44);
+                ctx.lineTo(0, headY + 49);
+                ctx.stroke();
+                
+            } else if (expression === 'sad') {
+                // 难过
+                ctx.beginPath();
+                ctx.arc(0, headY + 52, 10, Math.PI + 0.2, -0.2);
+                ctx.stroke();
+                
+            } else if (expression === 'angry') {
+                // 生气
+                ctx.beginPath();
+                ctx.moveTo(-12, headY + 42);
+                ctx.lineTo(12, headY + 42);
+                ctx.stroke();
+                
+                // 咬牙
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.rect(-8, headY + 40, 16, 4);
+                ctx.fill();
+                ctx.strokeStyle = '#8b5a5a';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                
+            } else {
+                // 普通
+                ctx.beginPath();
+                ctx.arc(0, headY + 38, 12, 0.15, Math.PI - 0.15);
+                ctx.stroke();
+            }
+        }
+
+        // 睡觉特效
+        function drawSleepEffect(x, y, time) {
+            const snoreAlpha = 0.5 + Math.sin(time * 2) * 0.3;
+            
+            // Zzz 符号
+            ctx.font = 'bold 24px serif';
+            ctx.fillStyle = `rgba(100, 150, 180, ${snoreAlpha})`;
+            ctx.fillText('Z', x, y + Math.sin(time * 1.5) * 5);
+            
+            ctx.font = 'bold 18px serif';
+            ctx.fillStyle = `rgba(100, 150, 180, ${snoreAlpha * 0.8})`;
+            ctx.fillText('z', x + 18, y - 15 + Math.sin(time * 1.5 + 1) * 4);
+            
+            ctx.font = 'bold 14px serif';
+            ctx.fillStyle = `rgba(100, 150, 180, ${snoreAlpha * 0.6})`;
+            ctx.fillText('z', x + 32, y - 28 + Math.sin(time * 1.5 + 2) * 3);
+            
+            // 鼻涕泡
+            const bubbleSize = 10 + Math.sin(time * 1.2) * 4;
+            ctx.fillStyle = 'rgba(200, 230, 255, 0.5)';
+            ctx.strokeStyle = 'rgba(150, 200, 230, 0.4)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.arc(x + 50, y + 30, bubbleSize, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            
+            // 泡高光
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.beginPath();
+            ctx.arc(x + 46, y + 26, 3, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // 兴奋特效（站立时）
+        function drawExcitedEffect(x, y, time) {
+            ctx.save();
+            ctx.globalAlpha = 0.7;
+            
+            // 旋转的星星
+            for (let i = 0; i < 6; i++) {
+                const angle = time * 3 + i * Math.PI / 3;
+                const radius = 50 + Math.sin(time * 2 + i) * 15;
+                const sx = x + Math.cos(angle) * radius;
+                const sy = y + Math.sin(angle) * radius * 0.6;
+                
+                ctx.font = `${16 + i * 2}px serif`;
+                ctx.fillStyle = `hsl(${40 + i * 30}, 80%, 60%)`;
+                ctx.fillText('✨', sx, sy);
+            }
+            
+            ctx.restore();
+        }
+
+        // ========== 特效绘制（带位置参数）==========
+        function drawEatingEffect(x, y) {
+            const alpha = state.animation.eating;
+            const foods = ['🍰', '🍪', '🧁', '🥕', '🍎', '🥬'];
+            const food = foods[Math.floor(Date.now() / 800) % foods.length];
+            const offsetY = Math.sin(Date.now() / 200) * 5;
+            
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.font = '42px serif';
+            ctx.fillText(food, x, y + offsetY);
+            
+            // 咀嚼效果
+            ctx.font = '24px serif';
+            ctx.fillStyle = '#ff6b9d';
+            ctx.fillText('😋', x + 25, y - 20 + offsetY);
+            ctx.fillText('✨', x - 20, y + 10 + offsetY);
+            ctx.restore();
+        }
+
+        function drawDrinkingEffect(x, y) {
             const alpha = state.animation.drinking;
             const time = Date.now() / 150;
             
@@ -1499,22 +1926,22 @@
             ctx.globalAlpha = alpha;
             
             // 水滴
-            for (let i = 0; i < 6; i++) {
-                const x = 260 + Math.sin(time + i * 0.8) * 25;
-                const y = 120 + (1 - alpha) * 80 + i * 12;
-                const size = 5 + i * 1.5;
-                ctx.fillStyle = `rgba(100, 180, 255, ${alpha * (0.9 - i * 0.1)})`;
+            for (let i = 0; i < 5; i++) {
+                const dx = Math.sin(time + i * 0.8) * 20;
+                const dy = i * 10;
+                const size = 4 + i * 1.2;
+                ctx.fillStyle = `rgba(100, 180, 255, ${alpha * (0.9 - i * 0.15)})`;
                 ctx.beginPath();
-                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.arc(x + dx, y + dy, size, 0, Math.PI * 2);
                 ctx.fill();
             }
             
-            ctx.font = '42px serif';
-            ctx.fillText('🧃', 280, 100);
+            ctx.font = '36px serif';
+            ctx.fillText('🧃', x + 10, y - 15);
             ctx.restore();
         }
 
-        function drawPlayingEffect() {
+        function drawPlayingEffect(x, y) {
             const alpha = state.animation.playing;
             const time = Date.now() / 80;
             
@@ -1524,34 +1951,34 @@
             // 旋转星星
             for (let i = 0; i < 8; i++) {
                 const angle = time + i * Math.PI / 4;
-                const radius = 70 + Math.sin(time * 2 + i) * 25;
-                const x = 190 + Math.cos(angle) * radius;
-                const y = 160 + Math.sin(angle) * radius * 0.5;
-                ctx.font = `${18 + i * 2}px serif`;
+                const radius = 60 + Math.sin(time * 2 + i) * 20;
+                const sx = x + Math.cos(angle) * radius;
+                const sy = y + Math.sin(angle) * radius * 0.5;
+                ctx.font = `${16 + i * 2}px serif`;
                 ctx.fillStyle = `hsl(${45 + i * 25}, 85%, 65%)`;
-                ctx.fillText('✨', x, y);
+                ctx.fillText('✨', sx, sy);
             }
             
             // 音符
-            ctx.font = '36px serif';
-            ctx.fillText('🎵', 120, 110);
-            ctx.fillText('🎶', 280, 130);
-            ctx.fillText('♪', 100, 180);
+            ctx.font = '32px serif';
+            ctx.fillText('🎵', x - 70, y - 50);
+            ctx.fillText('🎶', x + 70, y - 30);
             ctx.restore();
         }
 
-        function drawHeartEffect() {
+        function drawHeartEffect(x, y) {
             const alpha = state.animation.heartFloat;
             const time = Date.now() / 200;
             
             ctx.save();
             ctx.globalAlpha = alpha;
-            ctx.font = '32px serif';
+            ctx.font = '28px serif';
             
+            const hearts = ['💕', '💖', '💗', '💝'];
             for (let i = 0; i < 4; i++) {
-                const x = 150 + i * 40 + Math.sin(time + i) * 10;
-                const y = 80 - alpha * 40 + Math.cos(time + i * 0.5) * 5;
-                ctx.fillText('💕', x, y);
+                const hx = x - 60 + i * 40 + Math.sin(time + i) * 8;
+                const hy = y - alpha * 30 + Math.cos(time + i * 0.5) * 4;
+                ctx.fillText(hearts[i], hx, hy);
             }
             ctx.restore();
         }
@@ -1562,14 +1989,20 @@
                 showOfflineNotice('💤 小猪在睡觉呢，不要打扰它~');
                 return;
             }
+            // 重置姿态
+            state.animation.lying = 0;
+            state.animation.sideLying = 0;
+            
             state.animation.eating = 1;
             state.animation.bounce = 1.5;
-            state.animation.tailWag = 6;
-            state.animation.earTwitch = 1;
+            state.animation.tailWag = 8;
+            state.animation.earTwitch = 1.5;
             modifyHappiness(15);
             
             const foods = ['🍰', '🍪', '🧁', '🥕', '🍎'];
             feedRing.textContent = foods[Math.floor(Math.random() * foods.length)];
+            
+            showOfflineNotice('🍰 小猪吃得津津有味！');
         }
 
         function drinkAction() {
@@ -1577,22 +2010,64 @@
                 showOfflineNotice('💤 小猪在睡觉呢，不要打扰它~');
                 return;
             }
+            // 重置姿态
+            state.animation.lying = 0;
+            state.animation.sideLying = 0;
+            
             state.animation.drinking = 1;
             state.animation.bounce = 1;
+            state.animation.tailWag = 4;
             modifyHappiness(10);
+            
+            showOfflineNotice('💧 小猪咕嘟咕嘟喝水~');
         }
 
+        // 点击玩耍 - 站立摇尾巴
         function playAction() {
             if (state.isSleeping) {
                 showOfflineNotice('💤 小猪在睡觉呢，轻轻点击叫醒它~');
                 return;
             }
+            
+            // 重置其他姿态
+            state.animation.lying = 0;
+            state.animation.sideLying = 0;
+            
+            // 站立姿态 + 摇尾巴
+            state.animation.standing = 1;
             state.animation.playing = 1;
-            state.animation.bounce = 1.8;
-            state.animation.tailWag = 10;
-            state.animation.earTwitch = 1.5;
+            state.animation.tailWag = 12;
+            state.animation.earTwitch = 2;
             state.animation.heartFloat = 1;
+            state.animation.bounce = 2;
+            
             modifyHappiness(8);
+            showOfflineNotice('🎵 小猪开心地站立摇尾巴！');
+        }
+
+        // 撒娇/躺下动作
+        function saJiaoAction() {
+            if (state.isSleeping) return;
+            
+            state.animation.standing = 0;
+            state.animation.lying = 1;
+            state.animation.tailWag = 3;
+            state.animation.heartFloat = 1;
+            
+            modifyHappiness(5);
+            showOfflineNotice('🥰 小猪躺下撒娇~');
+        }
+
+        // 侧躺休息
+        function sideRestAction() {
+            if (state.isSleeping) return;
+            
+            state.animation.standing = 0;
+            state.animation.lying = 0;
+            state.animation.sideLying = 1;
+            state.animation.tailWag = 1;
+            
+            showOfflineNotice('😴 小猪侧躺着休息...');
         }
 
         // ========== 运势功能 ==========
