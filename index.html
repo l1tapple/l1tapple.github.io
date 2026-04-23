@@ -1,2195 +1,2083 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>福运小猪 · 黄道萌宠</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>福运小猪 · 萌宠运势</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;600;700&display=swap');
-        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             user-select: none;
-            font-family: 'Noto Serif SC', 'Microsoft YaHei', serif;
         }
 
         body {
             min-height: 100vh;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
             overflow-x: hidden;
+            position: relative;
+            pointer-events: auto;
         }
 
-        #app {
-            position: relative;
+        /* 背景星星闪烁 */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 420px;
-            min-height: 100vh;
-            max-height: 100vh;
-            background: 
-                radial-gradient(ellipse at 30% 20%, rgba(139, 90, 43, 0.15) 0%, transparent 50%),
-                radial-gradient(ellipse at 70% 80%, rgba(160, 82, 45, 0.1) 0%, transparent 50%),
-                linear-gradient(180deg, #f5f0e8 0%, #e8e0d0 100%);
-            border-radius: 0;
-            box-shadow: 
-                0 25px 50px rgba(0,0,0,0.4),
-                inset 0 0 0 2px rgba(139, 90, 43, 0.3),
-                inset 0 0 60px rgba(139, 90, 43, 0.05);
-            overflow: hidden;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
+
+        /* 入场动画 */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             display: flex;
             flex-direction: column;
-            color: #3d2914;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 1s ease;
         }
 
-        @media (min-width: 421px) {
-            #app {
-                border-radius: 24px;
-                max-height: 90vh;
-                margin: auto;
-            }
-        }
-
-        #app::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image: 
-                url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+        .loading-overlay.hidden {
+            opacity: 0;
             pointer-events: none;
-            z-index: 1;
+            visibility: hidden;
+            display: none;
         }
 
-        #bubble-layer {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 30;
+        .loading-text {
+            font-size: 18px;
+            color: #ffb6c1;
+            animation: pulse 1.5s ease infinite;
         }
 
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        /* 气泡小猪 */
         .bubble-pig {
             position: absolute;
-            bottom: -80px;
-            opacity: 0;
-            filter: drop-shadow(0 4px 8px rgba(139, 90, 43, 0.3));
-            animation: floatUp ease-out forwards;
+            font-size: 30px;
+            animation: floatUp 4s ease-out forwards;
             pointer-events: none;
-            will-change: transform, opacity;
         }
 
         @keyframes floatUp {
             0% { 
-                transform: translateY(0) translateX(0) rotate(0deg) scale(0.5); 
+                transform: translateY(100vh) translateX(0) rotate(0deg) scale(0.5); 
                 opacity: 0;
             }
-            10% {
-                opacity: 0.9;
-            }
-            25% { 
-                transform: translateY(-25vh) translateX(var(--sway-1, 20px)) rotate(var(--rot-1, -8deg)) scale(0.85); 
-                opacity: 0.95;
-            }
+            10% { opacity: 0.8; }
             50% { 
-                transform: translateY(-50vh) translateX(var(--sway-2, -15px)) rotate(var(--rot-2, 5deg)) scale(1); 
+                transform: translateY(50vh) translateX(30px) rotate(10deg) scale(1); 
                 opacity: 0.9;
-            }
-            75% { 
-                transform: translateY(-75vh) translateX(var(--sway-3, 25px)) rotate(var(--rot-3, -3deg)) scale(1.05); 
-                opacity: 0.6;
             }
             100% { 
-                transform: translateY(-110vh) translateX(var(--sway-4, 0px)) rotate(var(--rot-4, 0deg)) scale(1.1); 
+                transform: translateY(-20vh) translateX(-20px) rotate(-5deg) scale(1.2); 
                 opacity: 0;
             }
         }
 
-        #main-interface {
+        /* 主容器 */
+        .container {
+            max-width: 420px;
+            margin: 0 auto;
+            min-height: 100vh;
+            padding: 16px;
             position: relative;
-            z-index: 20;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 0;
-            opacity: 0;
-            transition: opacity 1.2s ease;
-            pointer-events: none;
-            overflow-y: auto;
-            overflow-x: hidden;
+            z-index: 10;
+            pointer-events: auto;
         }
 
-        #main-interface.show {
+        /* 退出按钮 */
+        .exit-btn {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .exit-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(255, 107, 107, 0.5);
+        }
+
+        /* 顶部区域 */
+        .top-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .auspicious-day {
+            font-size: 16px;
+            color: #ffd700;
+            text-align: center;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .time-display {
+            text-align: center;
+            font-size: 28px;
+            color: #fff;
+            margin-bottom: 16px;
+            font-weight: bold;
+        }
+
+        .weather-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .weather-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #e0e0e0;
+        }
+
+        .weather-item span:first-child {
+            font-size: 20px;
+        }
+
+        .refresh-btn {
+            background: none;
+            border: none;
+            color: #ffd700;
+            font-size: 20px;
+            cursor: pointer;
+            margin-left: 8px;
+            animation: spin 3s linear infinite;
+        }
+
+        .refresh-btn:hover {
+            transform: scale(1.2);
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 运势水晶球 */
+        .fortune-ball {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .crystal-ball {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 182, 193, 0.3));
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 30px rgba(255, 182, 193, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.3);
+            animation: glow 2s ease infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 30px rgba(255, 182, 193, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.3); }
+            50% { box-shadow: 0 0 50px rgba(255, 182, 193, 0.8), inset 0 0 30px rgba(255, 255, 255, 0.5); }
+        }
+
+        .crystal-ball:hover {
+            transform: scale(1.1);
+        }
+
+        .fortune-label {
+            margin-top: 10px;
+            color: #ffb6c1;
+            font-size: 14px;
+        }
+
+        /* 运势弹窗 */
+        .fortune-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 500;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .fortune-modal.show {
             opacity: 1;
             pointer-events: auto;
         }
 
-        .exit-btn {
+        .fortune-content {
+            width: 90%;
+            max-width: 380px;
+            max-height: 85vh;
+            overflow-y: auto;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(245, 235, 255, 0.95));
+            border-radius: 24px;
+            padding: 24px;
+            position: relative;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+            border: 3px solid rgba(255, 182, 193, 0.5);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .fortune-modal.show .fortune-content {
+            transform: scale(1);
+        }
+
+        .close-btn {
             position: absolute;
-            top: 16px; right: 16px;
-            width: 44px; height: 44px;
-            background: 
-                radial-gradient(circle at 30% 30%, rgba(180, 60, 60, 0.9), rgba(139, 35, 35, 0.95));
+            top: -15px;
+            right: -15px;
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
             border-radius: 50%;
+            border: 3px solid white;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            font-weight: bold;
-            color: #f5e6d3;
-            border: 2px solid #8b3a3a;
-            box-shadow: 
-                0 4px 12px rgba(139, 35, 35, 0.4),
-                inset 0 2px 4px rgba(255,255,255,0.2);
-            cursor: pointer;
-            z-index: 50;
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
-        .exit-btn:hover { 
-            background: radial-gradient(circle at 30% 30%, rgba(200, 70, 70, 0.95), rgba(160, 45, 45, 1));
-            transform: scale(1.05);
-        }
-        .exit-btn:active { transform: scale(0.95); }
 
-        .header-section {
+        .fortune-title {
             text-align: center;
-            margin: 12px 16px 10px;
-            padding: 10px 14px;
-            background: 
-                linear-gradient(135deg, rgba(139, 90, 43, 0.08) 0%, rgba(160, 82, 45, 0.05) 100%);
-            border-radius: 16px;
-            border: 1px solid rgba(139, 90, 43, 0.2);
-            position: relative;
-            flex-shrink: 0;
+            font-size: 22px;
+            color: #8b4513;
+            margin-bottom: 20px;
+            font-weight: bold;
         }
-        .header-section::before,
-        .header-section::after {
-            content: '❖';
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            color: rgba(139, 90, 43, 0.3);
-            font-size: 12px;
-        }
-        .header-section::before { left: 12px; }
-        .header-section::after { right: 12px; }
 
-        .auspicious-day {
-            font-family: 'Ma Shan Zheng', cursive;
-            font-size: 24px;
-            font-weight: 400;
-            color: #5d3a1a;
-            letter-spacing: 4px;
-            text-shadow: 1px 1px 2px rgba(139, 90, 43, 0.2);
+        .fortune-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
             margin-bottom: 6px;
         }
-        
-        .weather-panel {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 16px;
-            padding: 6px 12px;
-            font-size: 13px;
-            color: #6b4423;
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 6px;
         }
-        .weather-item {
+
+        .stat-bar {
+            height: 8px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .stat-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .fortune-luck {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 16px 0;
+            padding: 12px;
+            background: rgba(139, 69, 19, 0.1);
+            border-radius: 12px;
+        }
+
+        .luck-item {
             display: flex;
             align-items: center;
             gap: 6px;
-        }
-
-        .fortune-area {
-            display: flex;
-            justify-content: center;
-            margin: 8px 0 10px;
-            flex-shrink: 0;
-        }
-        .fortune-btn {
-            background: 
-                linear-gradient(135deg, rgba(139, 90, 43, 0.15) 0%, rgba(160, 82, 45, 0.1) 100%);
-            border: 2px solid #8b5a2b;
-            border-radius: 50px;
-            padding: 12px 32px;
-            font-family: 'Ma Shan Zheng', cursive;
-            font-size: 22px;
+            font-size: 13px;
             color: #5d3a1a;
-            box-shadow: 
-                0 6px 16px rgba(139, 90, 43, 0.2),
-                inset 0 1px 2px rgba(255,255,255,0.5);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            letter-spacing: 8px;
-            position: relative;
-            overflow: hidden;
-        }
-        .fortune-btn::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s;
-        }
-        .fortune-btn:hover::before { left: 100%; }
-        .fortune-btn:active { 
-            transform: scale(0.96); 
-            background: rgba(139, 90, 43, 0.25);
         }
 
-        .pet-section {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: 
-                radial-gradient(ellipse at 50% 30%, rgba(245, 240, 230, 0.8) 0%, rgba(232, 224, 208, 0.6) 100%);
-            border-radius: 24px 24px 0 0;
-            padding: 16px 14px 12px;
-            border: 2px solid rgba(139, 90, 43, 0.25);
-            border-bottom: none;
-            box-shadow: 
-                inset 0 2px 8px rgba(139, 90, 43, 0.1),
-                0 8px 24px rgba(0,0,0,0.1);
-            margin: 0 8px;
-            position: relative;
-            min-height: 0;
-        }
-        .pet-section::before {
-            content: '';
-            position: absolute;
-            top: 10px; left: 50%;
-            transform: translateX(-50%);
-            width: 60px; height: 4px;
-            background: rgba(139, 90, 43, 0.2);
-            border-radius: 2px;
-        }
-
-        .pet-canvas-container {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 200px;
-            max-height: 300px;
-            position: relative;
-            padding: 10px;
-        }
-
-        .pet-base {
-            position: absolute;
-            bottom: 20px;
-            width: 200px; height: 40px;
-            background: radial-gradient(ellipse at center, rgba(139, 90, 43, 0.15) 0%, transparent 70%);
-            border-radius: 50%;
-        }
-
-        canvas#petCanvas {
-            width: 260px;
-            height: 260px;
-            max-width: 100%;
-            max-height: 100%;
-            image-rendering: crisp-edges;
-            filter: drop-shadow(0 12px 20px rgba(139, 90, 43, 0.25));
-            cursor: pointer;
-            position: relative;
-            z-index: 10;
-            object-fit: contain;
-        }
-
-        .happiness-bar-wrap {
-            margin: 10px 20px 6px;
-            height: 12px;
-            background: 
-                linear-gradient(180deg, #d4c4a8 0%, #c4b498 100%);
-            border-radius: 20px;
-            overflow: hidden;
-            border: 2px solid #8b5a2b;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.15);
-            flex-shrink: 0;
-        }
-        #happinessFill {
-            width: 80%;
-            height: 100%;
-            background: 
-                linear-gradient(90deg, #c9a227 0%, #daa520 30%, #ffd700 50%, #daa520 70%, #c9a227 100%);
-            border-radius: 20px;
-            transition: width 0.5s ease;
-            box-shadow: inset 0 1px 2px rgba(255,255,255,0.4);
-            position: relative;
-        }
-        #happinessFill::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, transparent 50%);
-        }
-
-        .action-rings {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 24px;
-            margin: 12px 0 6px;
-            flex-shrink: 0;
-        }
-        .ring-item {
-            width: 60px;
-            height: 60px;
-            background: 
-                radial-gradient(circle at 30% 30%, rgba(245, 240, 230, 0.95), rgba(232, 224, 208, 0.9));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 3px solid #8b5a2b;
-            box-shadow: 
-                0 6px 16px rgba(139, 90, 43, 0.25),
-                inset 0 2px 4px rgba(255,255,255,0.6);
-            font-size: 28px;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            position: relative;
-            flex-shrink: 0;
-        }
-        .ring-item::before {
-            content: '';
-            position: absolute;
-            top: 4px; left: 4px; right: 4px; bottom: 4px;
-            border: 1px dashed rgba(139, 90, 43, 0.3);
-            border-radius: 50%;
-        }
-        .ring-item:hover { 
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 10px 24px rgba(139, 90, 43, 0.35);
-        }
-        .ring-item:active { 
-            transform: translateY(0) scale(0.95);
-            background: rgba(139, 90, 43, 0.15);
-        }
-        .ring-item.disabled { 
-            opacity: 0.4; 
-            pointer-events: none; 
-            filter: grayscale(0.6);
-        }
-        .ring-item.sleep-disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .pet-tip {
-            font-size: 12px; 
-            text-align: center; 
-            color: #6b4423;
-            opacity: 0.85;
-            margin-top: 4px;
-            margin-bottom: 8px;
-            font-family: 'Ma Shan Zheng', cursive;
-            letter-spacing: 2px;
-            flex-shrink: 0;
-        }
-
-        .offline-notice {
-            position: fixed;
-            top: 90px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: 
-                linear-gradient(135deg, rgba(93, 58, 26, 0.95), rgba(139, 90, 43, 0.9));
-            color: #f5e6d3;
-            padding: 14px 28px;
-            border-radius: 50px;
-            border: 2px solid #c9a227;
-            z-index: 100;
-            font-family: 'Ma Shan Zheng', cursive;
-            font-size: 16px;
-            letter-spacing: 2px;
-            opacity: 0;
-            transition: opacity 0.5s;
-            pointer-events: none;
-            white-space: nowrap;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-        }
-
-        .sleep-status-tip {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: 
-                linear-gradient(135deg, rgba(93, 58, 26, 0.9), rgba(139, 90, 43, 0.85));
-            color: #f5e6d3;
-            padding: 12px 24px;
-            border-radius: 50px;
-            border: 2px solid #c9a227;
-            font-family: 'Ma Shan Zheng', cursive;
-            font-size: 16px;
-            letter-spacing: 3px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-            z-index: 50;
-            white-space: nowrap;
-        }
-        .sleep-status-tip.show {
-            opacity: 1;
-        }
-
-        .modal-overlay {
-            position: fixed; top:0; left:0; width:100%; height:100%;
-            background: rgba(26, 26, 46, 0.85);
-            backdrop-filter: blur(8px);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 200;
-        }
-        
-        .fortune-modal {
-            width: 360px;
-            max-height: 85vh;
-            background: 
-                linear-gradient(135deg, #f5f0e8 0%, #ebe5d8 100%);
-            border: 3px solid #8b5a2b;
-            border-radius: 24px;
-            padding: 0;
-            box-shadow: 
-                0 25px 50px rgba(0,0,0,0.4),
-                inset 0 0 0 1px rgba(139, 90, 43, 0.2);
-            color: #3d2914;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .fortune-modal::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; height: 80px;
-            background: 
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60'%3E%3Cpath d='M20,40 Q30,20 50,35 T90,30 T130,35 T170,25 T200,40' fill='none' stroke='%238b5a2b' stroke-width='1.5' opacity='0.3'/%3E%3Cpath d='M0,50 Q25,30 50,45 T100,40 T150,45 T200,35' fill='none' stroke='%23a0522d' stroke-width='1' opacity='0.25'/%3E%3C/svg%3E") repeat-x;
-            opacity: 0.6;
-        }
-        .fortune-modal::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0; right: 0; height: 60px;
-            background: 
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 50'%3E%3Cpath d='M10,20 Q30,35 50,15 T90,25 T130,15 T170,30 T200,20' fill='none' stroke='%238b5a2b' stroke-width='1.5' opacity='0.3'/%3E%3C/svg%3E") repeat-x;
-            opacity: 0.5;
-        }
-
-        .modal-header {
-            background: 
-                linear-gradient(135deg, #8b5a2b 0%, #a0522d 50%, #8b5a2b 100%);
-            padding: 20px;
-            text-align: center;
-            position: relative;
-            border-bottom: 2px solid #c9a227;
-        }
-        .modal-header::before,
-        .modal-header::after {
-            content: '☁';
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            color: rgba(245, 230, 211, 0.4);
-            font-size: 24px;
-        }
-        .modal-header::before { left: 30px; }
-        .modal-header::after { right: 30px; }
-
-        .modal-title {
-            font-family: 'Ma Shan Zheng', cursive;
-            font-size: 32px;
-            color: #f5e6d3;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            letter-spacing: 8px;
-        }
-
-        .modal-content {
-            padding: 20px 24px;
-            position: relative;
-            z-index: 10;
-        }
-
-        .stat-section {
-            margin-bottom: 16px;
-        }
-        .stat-row { 
-            display: flex; 
-            align-items: center; 
-            margin: 10px 0;
-            padding: 8px 12px;
-            background: rgba(139, 90, 43, 0.05);
-            border-radius: 12px;
-            border-left: 3px solid #c9a227;
-        }
-        .stat-label { 
-            width: 60px; 
-            font-family: 'Ma Shan Zheng', cursive;
+        .luck-item span:first-child {
             font-size: 18px;
-            color: #5d3a1a;
-        }
-        .stat-bar-bg { 
-            flex:1; 
-            height: 14px; 
-            background: #d4c4a8; 
-            border-radius: 20px; 
-            margin: 0 12px;
-            border: 1px solid #b8a080;
-            overflow: hidden;
-        }
-        .stat-bar-fill { 
-            height: 100%; 
-            border-radius: 20px; 
-            background: linear-gradient(90deg, #c9a227, #daa520, #ffd700);
-            transition: width 0.8s ease;
-            position: relative;
-        }
-        .stat-bar-fill::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, transparent 50%);
-        }
-        .stat-value {
-            font-family: 'Ma Shan Zheng', cursive;
-            font-size: 20px;
-            color: #8b5a2b;
-            min-width: 36px;
-            text-align: right;
         }
 
-        .lucky-section {
-            background: 
-                linear-gradient(135deg, rgba(201, 162, 39, 0.1) 0%, rgba(218, 165, 32, 0.05) 100%);
-            border: 2px dashed #c9a227;
-            border-radius: 16px;
-            padding: 16px;
-            margin: 16px 0;
-            position: relative;
-        }
-        .lucky-section::before {
-            content: '❖';
-            position: absolute;
-            top: -10px; left: 50%;
-            transform: translateX(-50%);
-            background: #f5f0e8;
-            padding: 0 12px;
-            color: #c9a227;
-            font-size: 14px;
-        }
-
-        .lucky-grid { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 12px; 
-        }
-        .lucky-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            color: #5d3a1a;
-            padding: 8px;
-            background: rgba(255,255,255,0.5);
-            border-radius: 8px;
-            border: 1px solid rgba(139, 90, 43, 0.15);
-        }
-        .lucky-icon {
-            font-size: 20px;
-        }
-
-        .yi-ji-section {
+        .fortune-yi-ji {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
             margin: 16px 0;
         }
-        .yi-box, .ji-box {
-            padding: 14px;
+
+        .yi-list, .ji-list {
+            background: rgba(255, 255, 255, 0.8);
             border-radius: 12px;
-            text-align: center;
+            padding: 12px;
         }
-        .yi-box {
-            background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(76, 175, 80, 0.05));
-            border: 2px solid #4caf50;
+
+        .yi-list {
+            border-left: 4px solid #4caf50;
         }
-        .ji-box {
-            background: linear-gradient(135deg, rgba(244, 67, 54, 0.1), rgba(244, 67, 54, 0.05));
-            border: 2px solid #f44336;
+
+        .ji-list {
+            border-left: 4px solid #f44336;
         }
-        .yi-ji-title {
-            font-family: 'Ma Shan Zheng', cursive;
-            font-size: 20px;
+
+        .list-title {
+            font-size: 14px;
+            font-weight: bold;
             margin-bottom: 8px;
+            color: #333;
         }
-        .yi-box .yi-ji-title { color: #2e7d32; }
-        .ji-box .yi-ji-title { color: #c62828; }
-        .yi-ji-content {
-            font-size: 13px;
-            line-height: 1.6;
-            color: #5d3a1a;
+
+        .list-item {
+            font-size: 12px;
+            color: #666;
+            margin: 4px 0;
         }
 
         .fortune-quote {
             text-align: center;
             padding: 16px;
-            margin: 12px 0;
-            background: 
-                linear-gradient(90deg, transparent, rgba(139, 90, 43, 0.08), transparent);
-            border-top: 1px dashed #c9a227;
-            border-bottom: 1px dashed #c9a227;
-        }
-        .quote-text {
-            font-family: 'Ma Shan Zheng', cursive;
-            font-size: 20px;
-            color: #8b5a2b;
-            letter-spacing: 3px;
-            line-height: 1.8;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 182, 193, 0.2));
+            border-radius: 12px;
+            margin: 16px 0;
+            font-style: italic;
+            color: #8b4513;
         }
 
-        .close-modal { 
-            text-align: center; 
-            margin-top: 16px;
-            padding-bottom: 8px;
-        }
-        .close-modal-btn { 
-            display: inline-block;
-            background: 
-                linear-gradient(135deg, #8b5a2b 0%, #a0522d 100%);
-            padding: 12px 48px; 
-            border-radius: 50px; 
-            color: #f5e6d3;
-            font-family: 'Ma Shan Zheng', cursive;
-            font-size: 20px;
-            letter-spacing: 8px;
+        .shake-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #ffb6c1, #ff69b4);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
             cursor: pointer;
-            border: 2px solid #c9a227;
-            box-shadow: 0 4px 12px rgba(139, 90, 43, 0.3);
             transition: all 0.3s ease;
-        }
-        .close-modal-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(139, 90, 43, 0.4);
+            box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
         }
 
-        .cloud-decoration {
+        .shake-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 105, 180, 0.4);
+        }
+
+        .shake-btn:active {
+            transform: translateY(0);
+        }
+
+        /* 小猪区域 */
+        .pig-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            margin-top: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .pig-wrapper {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .pig {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .pig:hover {
+            transform: scale(1.05);
+        }
+
+        .pig-body {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ffb6c1, #ff9aa2);
+            border-radius: 50% 50% 45% 45%;
+            position: relative;
+            box-shadow: 0 8px 24px rgba(255, 182, 193, 0.4);
+        }
+
+        .pig-face {
             position: absolute;
-            font-size: 40px;
-            opacity: 0.15;
-            color: #8b5a2b;
+            top: 25%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70%;
+        }
+
+        .pig-eyes {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+        }
+
+        .pig-eye {
+            width: 18px;
+            height: 18px;
+            background: #333;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .pig-eye::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+        }
+
+        .pig-nose {
+            width: 35px;
+            height: 25px;
+            background: #ff8a9a;
+            border-radius: 50%;
+            margin: 8px auto 0;
+            position: relative;
+        }
+
+        .pig-nose::before,
+        .pig-nose::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 50%;
+            top: 5px;
+        }
+
+        .pig-nose::before { left: 5px; }
+        .pig-nose::after { right: 5px; }
+
+        .pig-mouth {
+            width: 20px;
+            height: 10px;
+            border-bottom: 3px solid #ff6b7a;
+            border-radius: 0 0 50% 50%;
+            margin: 2px auto 0;
+        }
+
+        .pig-ear {
+            position: absolute;
+            width: 25px;
+            height: 30px;
+            background: #ffb6c1;
+            border-radius: 50% 50% 0 0;
+            top: -5px;
+        }
+
+        .pig-ear.left { left: 5px; transform: rotate(-20deg); }
+        .pig-ear.right { right: 5px; transform: rotate(20deg); }
+
+        .pig-ear::after {
+            content: '';
+            position: absolute;
+            width: 60%;
+            height: 60%;
+            background: #ff8a9a;
+            border-radius: 50% 50% 0 0;
+            top: 5px;
+            left: 20%;
+        }
+
+        .pig-cheek {
+            position: absolute;
+            width: 22px;
+            height: 14px;
+            background: rgba(255, 100, 100, 0.4);
+            border-radius: 50%;
+            top: 45%;
+        }
+
+        .pig-cheek.left { left: 5px; }
+        .pig-cheek.right { right: 5px; }
+
+        .pig-tail {
+            position: absolute;
+            right: -15px;
+            top: 40%;
+            width: 25px;
+            height: 25px;
+            border: 4px solid #ffb6c1;
+            border-radius: 50%;
+            border-left-color: transparent;
+            border-bottom-color: transparent;
+            transform: rotate(45deg);
+        }
+
+        /* 小猪状态表情 */
+        .pig.happy .pig-eye {
+            height: 8px;
+            border-radius: 0 0 50% 50%;
+            background: #333;
+        }
+
+        .pig.happy .pig-mouth {
+            width: 25px;
+            height: 12px;
+        }
+
+        .pig.sad .pig-eye {
+            height: 14px;
+            border-radius: 50% 50% 0 0;
+        }
+
+        .pig.sad .pig-mouth {
+            width: 15px;
+            height: 8px;
+            border-bottom: none;
+            border-top: 3px solid #ff6b7a;
+            border-radius: 50% 50% 0 0;
+        }
+
+        .pig.angry .pig-eye {
+            background: #ff0000;
+            transform: rotate(-10deg);
+        }
+
+        .pig.angry .pig-eye:last-child {
+            transform: rotate(10deg);
+        }
+
+        .pig.angry::before {
+            content: '💢';
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            animation: angryPulse 0.5s ease infinite;
+        }
+
+        @keyframes angryPulse {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.2); }
+        }
+
+        .pig.sleeping .pig-eye {
+            height: 4px;
+            border-radius: 10px;
+        }
+
+        .pig.sleeping .pig-mouth {
+            width: 10px;
+            height: 5px;
+            border-radius: 50%;
+            border: none;
+            background: #ff6b7a;
+        }
+
+        .pig.sleeping::after {
+            content: '💤';
+            position: absolute;
+            top: -20px;
+            right: -10px;
+            font-size: 20px;
+            animation: zzz 1.5s ease infinite;
+        }
+
+        @keyframes zzz {
+            0%, 100% { opacity: 0.5; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-5px); }
+        }
+
+        /* 小猪动画 */
+        .pig.eating {
+            animation: eating 0.3s ease infinite;
+        }
+
+        @keyframes eating {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-5px) rotate(-3deg); }
+        }
+
+        .pig.drinking {
+            animation: drinking 0.4s ease infinite;
+        }
+
+        @keyframes drinking {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(-15deg); }
+        }
+
+        .pig.playing {
+            animation: playing 0.5s ease;
+        }
+
+        @keyframes playing {
+            0% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.1) rotate(10deg); }
+            50% { transform: scale(1) rotate(-10deg); }
+            75% { transform: scale(1.1) rotate(5deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        .pig.waking {
+            animation: waking 1s ease;
+        }
+
+        @keyframes waking {
+            0% { transform: scale(0.9); opacity: 0.7; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* 开心值显示 */
+        .happiness-section {
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        .happiness-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: #fff;
+        }
+
+        .happiness-bar {
+            height: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .happiness-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.5s ease, background 0.5s ease;
+        }
+
+        /* 求安慰气泡 */
+        .comfort-bubble {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #ff6b6b;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            animation: bounce 1s ease infinite;
+            white-space: nowrap;
+        }
+
+        .comfort-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 8px solid transparent;
+            border-top-color: white;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        /* 飘字特效 */
+        .float-text {
+            position: absolute;
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            animation: floatText 1.5s ease forwards;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        @keyframes floatText {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-60px) scale(1.5); }
+        }
+
+        /* 互动圆环 */
+        .action-rings {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .action-ring {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15), inset 0 2px 4px rgba(255, 255, 255, 0.8);
+            position: relative;
+        }
+
+        .action-ring:hover {
+            transform: translateY(-4px) scale(1.08);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .action-ring:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+
+        .action-ring.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            filter: grayscale(0.6);
+        }
+
+        .action-ring .tooltip {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: #666;
+            white-space: nowrap;
+        }
+
+        /* 装扮按钮 */
+        .dress-btn {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .dress-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 小猪配饰 */
+        .pig-accessory {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 28px;
             pointer-events: none;
         }
-        .cloud-1 { top: 100px; left: 10px; }
-        .cloud-2 { top: 200px; right: 10px; }
-        .cloud-3 { bottom: 100px; left: 20px; }
 
-        .hidden { display: none !important; }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
+        /* 心情日记 */
+        .diary {
+            width: 100%;
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px;
         }
 
-        .floating {
-            animation: float 3s ease-in-out infinite;
+        .diary-title {
+            font-size: 12px;
+            color: #ffb6c1;
+            margin-bottom: 8px;
+        }
+
+        .diary-item {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .diary-item:last-child {
+            border-bottom: none;
+        }
+
+        /* 成就通知 */
+        .achievement-notify {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: linear-gradient(135deg, #ffd700, #ffb347);
+            padding: 12px 24px;
+            border-radius: 30px;
+            color: #5d3a1a;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 4px 20px rgba(255, 215, 0, 0.4);
+            z-index: 600;
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+
+        .achievement-notify.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* 节日彩蛋 */
+        .festival-decor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .lantern {
+            position: absolute;
+            font-size: 40px;
+            animation: sway 3s ease-in-out infinite;
+        }
+
+        @keyframes sway {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        /* 退出确认框 */
+        .exit-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .exit-modal.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .exit-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 300px;
+        }
+
+        .exit-content p {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .exit-btns {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .exit-btns button {
+            padding: 10px 24px;
+            border-radius: 20px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .exit-btns .confirm-btn {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .exit-btns .cancel-btn {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        /* 装扮选择器 */
+        .dress-modal {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            z-index: 400;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .dress-modal.show {
+            transform: translateY(0);
+        }
+
+        .dress-options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 16px;
+        }
+
+        .dress-option {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 182, 193, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .dress-option:hover, .dress-option.active {
+            border-color: #ff69b4;
+            background: rgba(255, 105, 180, 0.3);
+        }
+
+        /* 食物/水飞行动画 */
+        .flying-food {
+            position: fixed;
+            font-size: 30px;
+            z-index: 200;
+            pointer-events: none;
+        }
+
+        /* 响应式 */
+        @media (max-width: 380px) {
+            .action-ring {
+                width: 60px;
+                height: 60px;
+                font-size: 26px;
+            }
+            
+            .pig {
+                width: 100px;
+                height: 100px;
+            }
         }
     </style>
 </head>
 <body>
-<div id="app">
-    <div class="exit-btn" id="exitApp" title="关闭">✕</div>
-    <div id="bubble-layer"></div>
-    <div id="sleepStatusTip" class="sleep-status-tip"></div>
-    
-    <div id="offlineNotice" class="offline-notice">🐷 你离开了很久，小猪想你了...</div>
+    <!-- 背景星星 -->
+    <div class="stars" id="stars"></div>
 
-    <div id="main-interface">
-        <div class="header-section">
-            <div class="auspicious-day" id="auspiciousText">乙巳年 三月初九 宜祈福</div>
-            <div class="weather-panel">
+    <!-- 节日彩蛋容器 -->
+    <div class="festival-decor" id="festivalDecor"></div>
+
+    <!-- 入场动画 -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-text">✨ 小猪仙境加载中 ✨</div>
+    </div>
+
+    <!-- 成就通知 -->
+    <div class="achievement-notify" id="achievementNotify"></div>
+
+    <!-- 退出按钮 -->
+    <button class="exit-btn" id="exitBtn">×</button>
+
+    <!-- 主容器 -->
+    <div class="container">
+        <!-- 顶部区域 -->
+        <div class="top-section">
+            <div class="auspicious-day" id="auspiciousDay">
+                乙巳年三月廿二 · 诸事皆宜 · 辰时大吉
+                <button class="refresh-btn" id="refreshFortuneBtn">🔄</button>
+            </div>
+            <div class="time-display" id="timeDisplay">19:09:00</div>
+            <div class="weather-row">
                 <div class="weather-item">
-                    <span>🌤️</span>
-                    <span>23°C 多云</span>
+                    <span id="weatherIcon">☀️</span>
+                    <span id="weatherText">晴</span>
                 </div>
                 <div class="weather-item">
-                    <span>☀️</span>
-                    <span>紫外线中等 · 宜防晒</span>
+                    <span>🧴</span>
+                    <span id="uvText">紫外线：中等</span>
+                </div>
+                <div class="weather-item">
+                    <span>👕</span>
+                    <span id="clothesText">薄外套</span>
+                </div>
+                <div class="weather-item">
+                    <span>☂️</span>
+                    <span id="sunscreenText">注意防晒</span>
                 </div>
             </div>
         </div>
 
-        <div class="fortune-area">
-            <div class="fortune-btn" id="fortuneBtn">✨ 今日运势 ✨</div>
+        <!-- 运势水晶球 -->
+        <div class="fortune-ball">
+            <div class="crystal-ball" id="crystalBall">🔮</div>
+            <div class="fortune-label">✨ 今日运势 ✨</div>
         </div>
 
-        <div class="pet-section">
-            <div class="pet-canvas-container">
-                <div class="pet-base"></div>
-                <canvas id="petCanvas" width="380" height="380"></canvas>
+        <!-- 小猪区域 -->
+        <div class="pig-section">
+            <div class="pig-wrapper">
+                <div class="pig" id="pig">
+                    <div class="pig-ear left"></div>
+                    <div class="pig-ear right"></div>
+                    <div class="pig-body">
+                        <div class="pig-face">
+                            <div class="pig-eyes">
+                                <div class="pig-eye"></div>
+                                <div class="pig-eye"></div>
+                            </div>
+                            <div class="pig-nose"></div>
+                            <div class="pig-mouth"></div>
+                        </div>
+                        <div class="pig-cheek left"></div>
+                        <div class="pig-cheek right"></div>
+                    </div>
+                    <div class="pig-tail"></div>
+                </div>
+                <button class="dress-btn" id="dressBtn">🎀</button>
             </div>
-            <div class="happiness-bar-wrap">
-                <div id="happinessFill" style="width: 80%;"></div>
+
+            <!-- 开心值 -->
+            <div class="happiness-section">
+                <div class="happiness-label">
+                    <span>❤️ 开心值</span>
+                    <span id="happinessValue">50/100</span>
+                </div>
+                <div class="happiness-bar">
+                    <div class="happiness-fill" id="happinessFill" style="width: 50%; background: linear-gradient(90deg, #ffeb3b, #ff9800);"></div>
+                </div>
             </div>
+
+            <!-- 互动圆环 -->
             <div class="action-rings">
-                <div class="ring-item" id="feedRing" title="喂食">🍰</div>
-                <div class="ring-item" id="drinkRing" title="喝水">🧃</div>
-                <div class="ring-item" id="sleepRing" title="睡觉/起床">🌸</div>
-            </div>
-            <div class="pet-tip">点击小猪玩耍 · 喂食喝水养萌宠</div>
-        </div>
-    </div>
-</div>
-
-<div id="fortuneModal" class="modal-overlay hidden">
-    <div class="fortune-modal">
-        <div class="cloud-decoration cloud-1">☁</div>
-        <div class="cloud-decoration cloud-2">☁</div>
-        <div class="cloud-decoration cloud-3">☁</div>
-        
-        <div class="modal-header">
-            <div class="modal-title">🐷 今日福运</div>
-        </div>
-        
-        <div class="modal-content">
-            <div class="stat-section">
-                <div class="stat-row">
-                    <span class="stat-label">事业运</span>
-                    <div class="stat-bar-bg"><div class="stat-bar-fill" id="careerBar" style="width:0%"></div></div>
-                    <span class="stat-value" id="careerValue">--</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">爱情运</span>
-                    <div class="stat-bar-bg"><div class="stat-bar-fill" id="loveBar" style="width:0%"></div></div>
-                    <span class="stat-value" id="loveValue">--</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">健康运</span>
-                    <div class="stat-bar-bg"><div class="stat-bar-fill" id="healthBar" style="width:0%"></div></div>
-                    <span class="stat-value" id="healthValue">--</span>
-                </div>
-                <div class="stat-row">
-                    <span class="stat-label">财运</span>
-                    <div class="stat-bar-bg"><div class="stat-bar-fill" id="wealthBar" style="width:0%"></div></div>
-                    <span class="stat-value" id="wealthValue">--</span>
-                </div>
+                <button class="action-ring" id="feedRing">
+                    🍰
+                    <span class="tooltip">喂食</span>
+                </button>
+                <button class="action-ring" id="drinkRing">
+                    💧
+                    <span class="tooltip">喝水</span>
+                </button>
+                <button class="action-ring" id="sleepRing">
+                    🌙
+                    <span class="tooltip">睡觉</span>
+                </button>
             </div>
 
-            <div class="lucky-section">
-                <div class="lucky-grid">
-                    <div class="lucky-item">
-                        <span class="lucky-icon">🐕</span>
-                        <span>贵人: <strong id="guiRen">虎</strong></span>
-                    </div>
-                    <div class="lucky-item">
-                        <span class="lucky-icon">🔢</span>
-                        <span>幸运数: <strong id="luckyNum">3,8</strong></span>
-                    </div>
-                    <div class="lucky-item">
-                        <span class="lucky-icon">🎨</span>
-                        <span>幸运色: <strong id="luckyColor">琥珀金</strong></span>
-                    </div>
-                    <div class="lucky-item">
-                        <span class="lucky-icon">🧭</span>
-                        <span>喜神位: <strong id="xiShen">东南</strong></span>
-                    </div>
+            <!-- 心情日记 -->
+            <div class="diary">
+                <div class="diary-title">📖 心情日记</div>
+                <div id="diaryList">
+                    <div class="diary-item">暂无记录...</div>
                 </div>
-            </div>
-
-            <div class="yi-ji-section">
-                <div class="yi-box">
-                    <div class="yi-ji-title">✅ 今日宜</div>
-                    <div class="yi-ji-content" id="yiContent">签约 · 出行<br>会友 · 纳财</div>
-                </div>
-                <div class="ji-box">
-                    <div class="yi-ji-title">❌ 今日忌</div>
-                    <div class="yi-ji-content" id="jiContent">争吵 · 动土<br>搬迁 · 诉讼</div>
-                </div>
-            </div>
-
-            <div class="fortune-quote">
-                <div class="quote-text" id="fortuneQuote">福运亨通，诸事顺遂</div>
-            </div>
-
-            <div class="close-modal">
-                <span class="close-modal-btn" id="closeModalBtn">关 闭</span>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    (function(){
-        "use strict";
+    <!-- 运势弹窗 -->
+    <div class="fortune-modal" id="fortuneModal">
+        <div class="fortune-content">
+            <button class="close-btn" id="closeFortuneBtn">×</button>
+            <div class="fortune-title">✨ 今日运势 ✨</div>
+            
+            <div class="fortune-stats">
+                <div class="stat-item">
+                    <div class="stat-label">💼 事业</div>
+                    <div class="stat-value" style="color: #2196f3;" id="careerValue">75</div>
+                    <div class="stat-bar">
+                        <div class="stat-fill" id="careerBar" style="width: 75%; background: linear-gradient(90deg, #2196f3, #64b5f6);"></div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">💕 爱情</div>
+                    <div class="stat-value" style="color: #e91e63;" id="loveValue">68</div>
+                    <div class="stat-bar">
+                        <div class="stat-fill" id="loveBar" style="width: 68%; background: linear-gradient(90deg, #e91e63, #f48fb1);"></div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">💪 健康</div>
+                    <div class="stat-value" style="color: #4caf50;" id="healthValue">82</div>
+                    <div class="stat-bar">
+                        <div class="stat-fill" id="healthBar" style="width: 82%; background: linear-gradient(90deg, #4caf50, #81c784);"></div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">💰 财运</div>
+                    <div class="stat-value" style="color: #ff9800;" id="wealthValue">60</div>
+                    <div class="stat-bar">
+                        <div class="stat-fill" id="wealthBar" style="width: 60%; background: linear-gradient(90deg, #ff9800, #ffb74d);"></div>
+                    </div>
+                </div>
+            </div>
 
-        // ========== 配置常量 ==========
-        const CONFIG = {
-            SLEEP_TIME: { start: 21, end: 7 },  // 睡觉时间 21:00 - 07:00
-            WAKE_TIME: { start: 7, end: 9 },     // 可起床时间 07:00 - 09:00
-            CANVAS_SIZE: 380
-        };
+            <div class="fortune-luck">
+                <div class="luck-item"><span>🐮</span><span>贵人生肖</span><strong id="guiRen">牛</strong></div>
+                <div class="luck-item"><span>🔢</span><span>幸运数字</span><strong id="luckyNum">7</strong></div>
+                <div class="luck-item"><span>🎨</span><span>幸运颜色</span><strong id="luckyColor">琉璃金</strong></div>
+                <div class="luck-item"><span>🧭</span><span>喜神方位</span><strong id="xiShen">东南</strong></div>
+            </div>
 
-        const STORAGE = {
-            HAPPINESS: 'piggy_happiness',
-            LAST_INTERACT: 'piggy_last_interact',
-            IS_SLEEPING: 'piggy_is_sleeping',
-            SLEEP_START_TIME: 'piggy_sleep_start',
-            FORTUNE_DATE: 'piggy_fortune_date',
-            FORTUNE_DATA: 'piggy_fortune_data'
-        };
+            <div class="fortune-yi-ji">
+                <div class="yi-list">
+                    <div class="list-title">✅ 宜</div>
+                    <div class="list-item" id="yiList1">交友</div>
+                    <div class="list-item" id="yiList2">签约</div>
+                    <div class="list-item" id="yiList3">出行</div>
+                </div>
+                <div class="ji-list">
+                    <div class="list-title">❌ 忌</div>
+                    <div class="list-item" id="jiList1">争吵</div>
+                    <div class="list-item" id="jiList2">借贷</div>
+                    <div class="list-item" id="jiList3">冒险</div>
+                </div>
+            </div>
 
-        const FORTUNE_DATA = {
-            guiRen: ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪'],
-            luckyNum: ['3,8', '1,6', '2,7', '4,9', '5,0', '3,7', '2,8', '1,9', '4,6', '5,8'],
-            luckyColor: ['琥珀金', '翡翠绿', '朱砂红', '墨玉黑', '青花瓷蓝', '胭脂粉', '象牙白', '紫檀紫', '明黄', '银白'],
-            xiShen: ['东南', '西北', '正南', '正北', '东北', '西南', '正东', '正西'],
-            yi: ['签约 · 出行\n会友 · 纳财', '开业 · 嫁娶\n搬家 · 装修', '求学 · 考试\n面试 · 谈判', '投资 · 理财\n合作 · 签约'],
-            ji: ['争吵 · 动土\n搬迁 · 诉讼', '借贷 · 担保\n冒险 · 投机', '远行 · 夜行\n独身 · 轻信', '冲动 · 熬夜\n暴饮暴食'],
-            quotes: ['福运亨通，诸事顺遂', '贵人相助，心想事成', '财源广进，步步高升', '桃花朵朵，姻缘美满', 
-                     '身体健康，精神饱满', '平安喜乐，岁月静好', '机遇临门，把握当下', '厚积薄发，一鸣惊人']
-        };
+            <div class="fortune-quote" id="fortuneQuote">
+                "云开见日，万事顺遂"
+            </div>
 
+            <button class="shake-btn" id="shakeBtn">🎋 求一支签</button>
+        </div>
+    </div>
+
+    <!-- 退出确认框 -->
+    <div class="exit-modal" id="exitModal">
+        <div class="exit-content">
+            <p>🐷 真的要离开小猪吗？<br>它会想你的～</p>
+            <div class="exit-btns">
+                <button class="cancel-btn" id="cancelExitBtn">再陪它一会儿</button>
+                <button class="confirm-btn" id="confirmExitBtn">依依不舍地离开</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 装扮选择器 -->
+    <div class="dress-modal" id="dressModal">
+        <div class="dress-title" style="text-align: center; margin-bottom: 12px; color: #8b4513;">选择配饰</div>
+        <div class="dress-options">
+            <div class="dress-option" data-accessory="">🚫 无</div>
+            <div class="dress-option" data-accessory="🎀">🎀</div>
+            <div class="dress-option" data-accessory="🎩">🎩</div>
+            <div class="dress-option" data-accessory="🌸">🌸</div>
+        </div>
+    </div>
+
+    <script>
         // ========== 全局状态 ==========
         const state = {
-            happiness: 80,
+            happiness: 50,
             isSleeping: false,
-            sleepStartTime: null,
-            lastInteractionTime: Date.now(),
-            animation: {
-                eating: 0,
-                drinking: 0,
-                playing: 0,
-                sleeping: 0,
-                blink: 0,
-                bounce: 0,
-                tailWag: 0,
-                earTwitch: 0,
-                snore: 0,
-                heartFloat: 0,
-                standing: 0,   // 站立动画
-                lying: 0,      // 趴下动画
-                sideLying: 0   // 侧躺动画
-            },
-            mousePos: { x: 0, y: 0 },
-            isLookingAtMouse: false,
-            frameCount: 0
+            currentAccessory: '',
+            feedCount: 0,
+            playCount: 0,
+            earlyWakeCount: 0,
+            diary: [],
+            lastInteraction: Date.now(),
+            achievements: []
         };
 
-        const canvas = document.getElementById('petCanvas');
-        const ctx = canvas.getContext('2d');
-        const happinessFill = document.getElementById('happinessFill');
-        const feedRing = document.getElementById('feedRing');
-        const drinkRing = document.getElementById('drinkRing');
-        const sleepRing = document.getElementById('sleepRing');
-        const sleepStatusTip = document.getElementById('sleepStatusTip');
+        // ========== 常量 ==========
+        const STORAGE_KEY = 'piggy_state';
+        const FOODS = ['🍰', '🍦', '🥤', '🍪', '🍎', '🧁'];
+        const YI_ITEMS = ['交友', '签约', '出行', '学习', '理财', '装修', '聚会', '运动'];
+        const JI_ITEMS = ['争吵', '借贷', '冒险', '投资', '搬家', '签约', '动土', '远行'];
+        const QUOTES = [
+            '云开见日，万事顺遂',
+            '福星高照，吉祥如意',
+            '脚踏实地，步步高升',
+            '心诚则灵，心想事成',
+            '贵人相助，好运连连',
+            '稳中求进，财源广进',
+            '春风得意，前程似锦',
+            '紫气东来，否极泰来'
+        ];
+        const ZODIAC_ANIMALS = ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪'];
+        const LUCKY_COLORS = ['琉璃金', '宝石蓝', '翡翠绿', '玫瑰粉', '琥珀色', '紫罗兰', '珊瑚红', '珍珠白'];
+        const POSITIONS = ['东', '南', '西', '北', '东南', '东北', '西南', '西北'];
+
+        // ========== DOM 元素 ==========
+        const elements = {
+            loadingOverlay: document.getElementById('loadingOverlay'),
+            stars: document.getElementById('stars'),
+            festivalDecor: document.getElementById('festivalDecor'),
+            auspiciousDay: document.getElementById('auspiciousDay'),
+            timeDisplay: document.getElementById('timeDisplay'),
+            weatherIcon: document.getElementById('weatherIcon'),
+            weatherText: document.getElementById('weatherText'),
+            uvText: document.getElementById('uvText'),
+            clothesText: document.getElementById('clothesText'),
+            sunscreenText: document.getElementById('sunscreenText'),
+            pig: document.getElementById('pig'),
+            happinessValue: document.getElementById('happinessValue'),
+            happinessFill: document.getElementById('happinessFill'),
+            feedRing: document.getElementById('feedRing'),
+            drinkRing: document.getElementById('drinkRing'),
+            sleepRing: document.getElementById('sleepRing'),
+            diaryList: document.getElementById('diaryList'),
+            fortuneModal: document.getElementById('fortuneModal'),
+            crystalBall: document.getElementById('crystalBall'),
+            exitBtn: document.getElementById('exitBtn'),
+            exitModal: document.getElementById('exitModal'),
+            dressBtn: document.getElementById('dressBtn'),
+            dressModal: document.getElementById('dressModal'),
+            achievementNotify: document.getElementById('achievementNotify'),
+            // 运势数据
+            careerValue: document.getElementById('careerValue'),
+            careerBar: document.getElementById('careerBar'),
+            loveValue: document.getElementById('loveValue'),
+            loveBar: document.getElementById('loveBar'),
+            healthValue: document.getElementById('healthValue'),
+            healthBar: document.getElementById('healthBar'),
+            wealthValue: document.getElementById('wealthValue'),
+            wealthBar: document.getElementById('wealthBar'),
+            guiRen: document.getElementById('guiRen'),
+            luckyNum: document.getElementById('luckyNum'),
+            luckyColor: document.getElementById('luckyColor'),
+            xiShen: document.getElementById('xiShen'),
+            yiList1: document.getElementById('yiList1'),
+            yiList2: document.getElementById('yiList2'),
+            yiList3: document.getElementById('yiList3'),
+            jiList1: document.getElementById('jiList1'),
+            jiList2: document.getElementById('jiList2'),
+            jiList3: document.getElementById('jiList3'),
+            fortuneQuote: document.getElementById('fortuneQuote')
+        };
 
         // ========== 初始化 ==========
         function init() {
+            createStars();
+            createBubbleAnimation();
             loadState();
-            applyOfflineDecay();
-            updateHappinessUI();
-            updateSleepUI();
-            startBubbleShow();
-            drawPig();
+            updateTime();
+            updateWeather();
+            updateFortuneData();
+            updatePigState();
+            updateSleepRing();
+            updateDiary();
+            checkFestival();
             bindEvents();
-            persistState();
-            startIdleCheck();
             
-            // 定时检查
-            setInterval(checkTimeBasedEvents, 30000);
-            checkTimeBasedEvents();
+            // 定时任务
+            setInterval(updateTime, 1000);
+            setInterval(updateWeather, 3600000); // 每小时
+            setInterval(checkIdleDecay, 3600000); // 每小时检查
+            setInterval(autoSleep, 60000); // 每分钟检查作息
+        }
+
+        // ========== 创建背景星星 ==========
+        function createStars() {
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                elements.stars.appendChild(star);
+            }
+        }
+
+        // ========== 气泡入场动画 ==========
+        function createBubbleAnimation() {
+            const pigEmojis = ['🐷', '🐽', '🐖', '🌸', '✨', '💕'];
+            
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const bubble = document.createElement('div');
+                    bubble.className = 'bubble-pig';
+                    bubble.textContent = pigEmojis[Math.floor(Math.random() * pigEmojis.length)];
+                    bubble.style.left = Math.random() * 80 + 10 + '%';
+                    bubble.style.animationDuration = (3 + Math.random() * 2) + 's';
+                    bubble.style.fontSize = (20 + Math.random() * 20) + 'px';
+                    document.body.appendChild(bubble);
+                    
+                    setTimeout(() => bubble.remove(), 5000);
+                }, i * 150);
+            }
+
+            // 动画结束后隐藏加载层
+            setTimeout(() => {
+                elements.loadingOverlay.classList.add('hidden');
+            }, 4500);
+        }
+
+        // ========== 时间更新 ==========
+        function updateTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            elements.timeDisplay.textContent = `${hours}:${minutes}:${seconds}`;
+            
+            // 更新时辰
+            const hour = now.getHours();
+            const shiChen = getShiChen(hour);
+            const lunarDate = getLunarDate();
+            const ganzhi = getGanzhiYear();
+            const luck = getDayLuck();
+            
+            elements.auspiciousDay.innerHTML = `${ganzhi}年${lunarDate} · ${luck} · ${shiChen}`;
+        }
+
+        function getShiChen(hour) {
+            if (hour >= 23 || hour < 1) return '子时大吉';
+            if (hour >= 1 && hour < 3) return '丑时小吉';
+            if (hour >= 3 && hour < 5) return '寅时中吉';
+            if (hour >= 5 && hour < 7) return '卯时大吉';
+            if (hour >= 7 && hour < 9) return '辰时大吉';
+            if (hour >= 9 && hour < 11) return '巳时中吉';
+            if (hour >= 11 && hour < 13) return '午时大吉';
+            if (hour >= 13 && hour < 15) return '未时小吉';
+            if (hour >= 15 && hour < 17) return '申时中吉';
+            if (hour >= 17 && hour < 19) return '酉时大吉';
+            if (hour >= 19 && hour < 21) return '戌时小吉';
+            if (hour >= 21 && hour < 23) return '亥时中吉';
+            return '时辰';
+        }
+
+        function getLunarDate() {
+            const now = new Date();
+            const months = ['正', '二', '三', '四', '五', '六', '七', '八', '九', '十', '冬', '腊'];
+            const month = months[now.getMonth()];
+            const day = now.getDate();
+            return `${month}月${day}`;
+        }
+
+        function getGanzhiYear() {
+            const years = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
+            const now = new Date();
+            const yearIndex = (now.getFullYear() - 2024 + 10) % 10;
+            return years[yearIndex] + '巳';
+        }
+
+        function getDayLuck() {
+            const lucks = ['诸事皆宜', '财源广进', '贵人相助', '心想事成', '福星高照', '紫气东来'];
+            return lucks[new Date().getDate() % lucks.length];
+        }
+
+        // ========== 天气更新 ==========
+        function updateWeather() {
+            const weathers = [
+                { icon: '☀️', text: '晴', uv: '中等', clothes: '薄外套', sunscreen: '注意防晒' },
+                { icon: '⛅', text: '多云', uv: '低', clothes: '长袖', sunscreen: '无需防晒' },
+                { icon: '🌧️', text: '小雨', uv: '低', clothes: '外套', sunscreen: '无需防晒' },
+                { icon: '🌤️', text: '晴转多云', uv: '高', clothes: '薄外套', sunscreen: '涂防晒' },
+                { icon: '☁️', text: '阴', uv: '低', clothes: '外套', sunscreen: '无需防晒' }
+            ];
+            
+            const weather = weathers[new Date().getHours() % weathers.length];
+            elements.weatherIcon.textContent = weather.icon;
+            elements.weatherText.textContent = weather.text;
+            elements.uvText.textContent = `紫外线：${weather.uv}`;
+            elements.clothesText.textContent = weather.clothes;
+            elements.sunscreenText.textContent = weather.sunscreen;
+        }
+
+        // ========== 运势数据 ==========
+        function updateFortuneData(shake = false) {
+            if (shake) {
+                // 抽签动画
+                const quotes = document.querySelectorAll('.fortune-quote');
+                let count = 0;
+                const interval = setInterval(() => {
+                    elements.fortuneQuote.textContent = `"${QUOTES[Math.floor(Math.random() * QUOTES.length)]}"`;
+                    count++;
+                    if (count > 10) {
+                        clearInterval(interval);
+                        elements.fortuneQuote.style.animation = 'none';
+                        elements.fortuneQuote.offsetHeight;
+                        elements.fortuneQuote.style.animation = '';
+                    }
+                }, 100);
+            }
+
+            // 随机生成运势数值
+            elements.careerValue.textContent = randomRange(50, 95);
+            elements.careerBar.style.width = elements.careerValue.textContent + '%';
+            
+            elements.loveValue.textContent = randomRange(45, 90);
+            elements.loveBar.style.width = elements.loveValue.textContent + '%';
+            
+            elements.healthValue.textContent = randomRange(60, 98);
+            elements.healthBar.style.width = elements.healthValue.textContent + '%';
+            
+            elements.wealthValue.textContent = randomRange(40, 88);
+            elements.wealthBar.style.width = elements.wealthValue.textContent + '%';
+
+            // 随机幸运信息
+            elements.guiRen.textContent = ZODIAC_ANIMALS[Math.floor(Math.random() * 12)];
+            elements.luckyNum.textContent = Math.floor(Math.random() * 50) + 1;
+            elements.luckyColor.textContent = LUCKY_COLORS[Math.floor(Math.random() * LUCKY_COLORS.length)];
+            elements.xiShen.textContent = POSITIONS[Math.floor(Math.random() * POSITIONS.length)];
+
+            // 随机宜忌
+            const shuffledYi = [...YI_ITEMS].sort(() => Math.random() - 0.5).slice(0, 3);
+            const shuffledJi = [...JI_ITEMS].sort(() => Math.random() - 0.5).slice(0, 3);
+            elements.yiList1.textContent = shuffledYi[0];
+            elements.yiList2.textContent = shuffledYi[1];
+            elements.yiList3.textContent = shuffledYi[2];
+            elements.jiList1.textContent = shuffledJi[0];
+            elements.jiList2.textContent = shuffledJi[1];
+            elements.jiList3.textContent = shuffledJi[2];
+
+            // 签文
+            if (!shake) {
+                elements.fortuneQuote.textContent = `"${QUOTES[Math.floor(Math.random() * QUOTES.length)]}"`;
+            }
+        }
+
+        function randomRange(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // ========== 小猪状态 ==========
+        function updatePigState() {
+            const pig = elements.pig;
+            
+            // 移除所有状态
+            pig.classList.remove('happy', 'sad', 'angry', 'sleeping', 'eating', 'drinking', 'playing', 'waking');
+            
+            // 移除求安慰气泡
+            const existingBubble = pig.parentElement.querySelector('.comfort-bubble');
+            if (existingBubble) existingBubble.remove();
+
+            // 根据开心值和睡眠状态设置表情
+            if (state.isSleeping) {
+                pig.classList.add('sleeping');
+            } else if (state.happiness > 60) {
+                pig.classList.add('happy');
+            } else if (state.happiness > 40) {
+                pig.classList.add('sad');
+            } else {
+                pig.classList.add('angry');
+                // 添加求安慰气泡
+                const bubble = document.createElement('div');
+                bubble.className = 'comfort-bubble';
+                bubble.textContent = '😭 求安慰';
+                pig.parentElement.appendChild(bubble);
+            }
+
+            // 更新开心值显示
+            elements.happinessValue.textContent = `${state.happiness}/100`;
+            elements.happinessFill.style.width = state.happiness + '%';
+            
+            // 根据开心值变化进度条颜色
+            if (state.happiness > 60) {
+                elements.happinessFill.style.background = 'linear-gradient(90deg, #4caf50, #81c784)';
+            } else if (state.happiness > 40) {
+                elements.happinessFill.style.background = 'linear-gradient(90deg, #ffeb3b, #ff9800)';
+            } else if (state.happiness > 20) {
+                elements.happinessFill.style.background = 'linear-gradient(90deg, #ff9800, #ff5722)';
+            } else {
+                elements.happinessFill.style.background = 'linear-gradient(90deg, #f44336, #e91e63)';
+            }
+
+            // 满100金光庆祝
+            if (state.happiness >= 100) {
+                elements.pig.style.boxShadow = '0 0 50px rgba(255, 215, 0, 0.8)';
+            } else {
+                elements.pig.style.boxShadow = '';
+            }
+
+            // 更新互动按钮状态
+            updateActionButtons();
+            saveState();
+        }
+
+        function updateActionButtons() {
+            const disabled = state.isSleeping;
+            elements.feedRing.classList.toggle('disabled', disabled);
+            elements.drinkRing.classList.toggle('disabled', disabled);
+        }
+
+        // ========== 作息环更新 ==========
+        function updateSleepRing() {
+            const hour = new Date().getHours();
+            const sleepRing = elements.sleepRing;
+            
+            if (state.isSleeping) {
+                sleepRing.innerHTML = '🛏️<span class="tooltip">睡觉中</span>';
+            } else if (hour >= 7 && hour < 9) {
+                sleepRing.innerHTML = '🐓<span class="tooltip">叫醒</span>';
+            } else if (hour >= 9 && hour < 21) {
+                const flowers = ['🌸', '🌼', '🌺', '🌻', '💐'];
+                sleepRing.innerHTML = `${flowers[Math.floor(Date.now() / 5000) % flowers.length]}<span class="tooltip">休息</span>`;
+            } else {
+                sleepRing.innerHTML = '🛏️<span class="tooltip">睡觉</span>';
+            }
+        }
+
+        // ========== 喂食 ==========
+        function feed() {
+            if (state.isSleeping) return;
+            
+            const food = FOODS[Math.floor(Math.random() * FOODS.length)];
+            const pigRect = elements.pig.getBoundingClientRect();
+            const ringRect = elements.feedRing.getBoundingClientRect();
+            
+            // 食物飞行动画
+            const foodEl = document.createElement('div');
+            foodEl.className = 'flying-food';
+            foodEl.textContent = food;
+            foodEl.style.left = ringRect.left + 'px';
+            foodEl.style.top = ringRect.top + 'px';
+            document.body.appendChild(foodEl);
+
+            // 抛物线动画
+            const startX = ringRect.left;
+            const startY = ringRect.top;
+            const endX = pigRect.left + pigRect.width / 2;
+            const endY = pigRect.top + pigRect.height / 2;
+            
+            let progress = 0;
+            const animate = () => {
+                progress += 0.03;
+                if (progress >= 1) {
+                    foodEl.remove();
+                    elements.pig.classList.add('eating');
+                    setTimeout(() => {
+                        elements.pig.classList.remove('eating');
+                        changeHappiness(20, '吃了' + food);
+                    }, 3000);
+                    return;
+                }
+                
+                const x = startX + (endX - startX) * progress;
+                const y = startY + (endY - startY) * progress - Math.sin(progress * Math.PI) * 100;
+                foodEl.style.left = x + 'px';
+                foodEl.style.top = y + 'px';
+                requestAnimationFrame(animate);
+            };
+            animate();
+
+            // 更新喂食计数和成就
+            state.feedCount++;
+            checkAchievement('feed');
+            
+            // 模拟音效
+            console.log('吧唧吧唧~');
+            showFloatText('+20 ❤️');
+        }
+
+        // ========== 喝水 ==========
+        function drink() {
+            if (state.isSleeping) return;
+            
+            const pigRect = elements.pig.getBoundingClientRect();
+            const ringRect = elements.drinkRing.getBoundingClientRect();
+            
+            // 水瓶飞行动画
+            const waterEl = document.createElement('div');
+            waterEl.className = 'flying-food';
+            waterEl.textContent = '💧';
+            waterEl.style.left = ringRect.left + 'px';
+            waterEl.style.top = ringRect.top + 'px';
+            document.body.appendChild(waterEl);
+
+            let progress = 0;
+            const animate = () => {
+                progress += 0.03;
+                if (progress >= 1) {
+                    waterEl.remove();
+                    elements.pig.classList.add('drinking');
+                    setTimeout(() => {
+                        elements.pig.classList.remove('drinking');
+                        changeHappiness(10, '喝了水');
+                    }, 3000);
+                    return;
+                }
+                
+                const x = ringRect.left + (pigRect.left + pigRect.width / 2 - ringRect.left) * progress;
+                const y = ringRect.top + (pigRect.top + pigRect.height / 2 - ringRect.top) * progress - Math.sin(progress * Math.PI) * 80;
+                waterEl.style.left = x + 'px';
+                waterEl.style.top = y + 'px';
+                requestAnimationFrame(animate);
+            };
+            animate();
+
+            console.log('咕嘟咕嘟~');
+            showFloatText('+10 💧');
+        }
+
+        // ========== 作息 ==========
+        function handleSleepAction() {
+            const hour = new Date().getHours();
+            
+            if (state.isSleeping) {
+                // 叫醒
+                state.isSleeping = false;
+                elements.pig.classList.add('waking');
+                setTimeout(() => elements.pig.classList.remove('waking'), 1000);
+                updatePigState();
+                updateSleepRing();
+                
+                // 早起成就检测
+                if (hour >= 7 && hour < 8) {
+                    state.earlyWakeCount++;
+                    checkAchievement('early');
+                }
+                
+                addDiary('被叫醒啦！精神满满~');
+                showFloatText('☀️ 早安！');
+            } else if (hour >= 7 && hour < 9) {
+                // 叫醒
+                state.isSleeping = false;
+                elements.pig.classList.add('waking');
+                setTimeout(() => elements.pig.classList.remove('waking'), 1000);
+                updatePigState();
+                updateSleepRing();
+                
+                if (hour >= 7 && hour < 8) {
+                    state.earlyWakeCount++;
+                    checkAchievement('early');
+                }
+                
+                addDiary('早起精神好~');
+                showFloatText('☀️ 起床啦！');
+            } else if (hour >= 21 || hour < 7) {
+                // 睡觉
+                state.isSleeping = true;
+                updatePigState();
+                updateSleepRing();
+                addDiary('乖乖睡觉💤');
+                showFloatText('🌙 晚安~');
+            }
+        }
+
+        // ========== 点击小猪玩耍 ==========
+        function playWithPig() {
+            if (state.isSleeping) return;
+            
+            const animations = ['playing'];
+            elements.pig.classList.add(...animations);
+            
+            setTimeout(() => {
+                elements.pig.classList.remove(...animations);
+            }, 500);
+
+            // 随机文字
+            const texts = ['咕噜~', '哼哼~', '开心！', '玩耍~'];
+            const text = texts[Math.floor(Math.random() * texts.length)];
+            
+            changeHappiness(2, text);
+            state.playCount++;
+            checkAchievement('play');
+            showFloatText('+2 ✨');
+            console.log(text);
+        }
+
+        // ========== 开心值变化 ==========
+        function changeHappiness(delta, reason) {
+            const oldHappiness = state.happiness;
+            state.happiness = Math.max(0, Math.min(100, state.happiness + delta));
+            state.lastInteraction = Date.now();
+            
+            updatePigState();
+            addDiary(`${formatTime()} ${reason} ${delta > 0 ? '+' : ''}${delta}❤️`);
+            
+            // 满100庆祝
+            if (state.happiness >= 100 && oldHappiness < 100) {
+                showAchievement('满级开心！小猪超级幸福！🎉');
+            }
+        }
+
+        // ========== 空闲衰减 ==========
+        function checkIdleDecay() {
+            if (state.isSleeping) return;
+            
+            const hoursPassed = (Date.now() - state.lastInteraction) / 3600000;
+            if (hoursPassed >= 1) {
+                changeHappiness(-20, '小猪有点孤单');
+                addDiary('小猪有点孤单...');
+            }
+        }
+
+        // ========== 自动作息 ==========
+        function autoSleep() {
+            const hour = new Date().getHours();
+            
+            // 9点自动起床
+            if (hour === 9 && state.isSleeping) {
+                state.isSleeping = false;
+                elements.pig.classList.add('waking');
+                setTimeout(() => elements.pig.classList.remove('waking'), 1000);
+                updatePigState();
+                updateSleepRing();
+                addDiary('9点啦！自动起床~');
+            }
+            
+            // 24点自动睡觉
+            if (hour === 0 && !state.isSleeping) {
+                state.isSleeping = true;
+                updatePigState();
+                updateSleepRing();
+                addDiary('24点啦！自动睡觉~');
+            }
+            
+            // 更新睡眠环
+            updateSleepRing();
+        }
+
+        // ========== 飘字特效 ==========
+        function showFloatText(text) {
+            const floatText = document.createElement('div');
+            floatText.className = 'float-text';
+            floatText.textContent = text;
+            
+            const pigRect = elements.pig.getBoundingClientRect();
+            floatText.style.left = (pigRect.left + pigRect.width / 2) + 'px';
+            floatText.style.top = (pigRect.top - 20) + 'px';
+            
+            document.body.appendChild(floatText);
+            setTimeout(() => floatText.remove(), 1500);
+        }
+
+        // ========== 心情日记 ==========
+        function addDiary(text) {
+            state.diary.unshift(text);
+            if (state.diary.length > 5) state.diary.pop();
+            updateDiary();
+            saveState();
+        }
+
+        function updateDiary() {
+            if (state.diary.length === 0) {
+                elements.diaryList.innerHTML = '<div class="diary-item">暂无记录...</div>';
+            } else {
+                elements.diaryList.innerHTML = state.diary.map(item => 
+                    `<div class="diary-item">${item}</div>`
+                ).join('');
+            }
+        }
+
+        function formatTime() {
+            const now = new Date();
+            return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        }
+
+        // ========== 成就系统 ==========
+        function checkAchievement(type) {
+            const now = new Date().getHours();
+            
+            if (type === 'feed' && state.feedCount === 10 && !state.achievements.includes('美食家')) {
+                state.achievements.push('美食家');
+                showAchievement('🏆 成就解锁：美食家！累计喂食10次');
+            }
+            
+            if (type === 'play' && state.playCount === 20 && !state.achievements.includes('最佳玩伴')) {
+                state.achievements.push('最佳玩伴');
+                showAchievement('🏆 成就解锁：最佳玩伴！累计玩耍20次');
+            }
+            
+            if (type === 'early' && state.earlyWakeCount === 3 && !state.achievements.includes('早起冠军')) {
+                state.achievements.push('早起冠军');
+                showAchievement('🏆 成就解锁：早起冠军！早起3次');
+            }
+            
+            saveState();
+        }
+
+        function showAchievement(text) {
+            elements.achievementNotify.textContent = text;
+            elements.achievementNotify.classList.add('show');
+            
+            setTimeout(() => {
+                elements.achievementNotify.classList.remove('show');
+            }, 3000);
+        }
+
+        // ========== 节日彩蛋 ==========
+        function checkFestival() {
+            const month = new Date().getMonth() + 1;
+            const decor = elements.festivalDecor;
+            decor.innerHTML = '';
+            
+            if (month === 1 || month === 2) {
+                // 春节
+                for (let i = 0; i < 4; i++) {
+                    const lantern = document.createElement('div');
+                    lantern.className = 'lantern';
+                    lantern.textContent = '🏮';
+                    lantern.style.left = (10 + i * 25) + '%';
+                    lantern.style.top = (5 + Math.random() * 10) + '%';
+                    lantern.style.animationDelay = (Math.random() * 2) + 's';
+                    decor.appendChild(lantern);
+                }
+            } else if (month === 9) {
+                // 中秋
+                const moon = document.createElement('div');
+                moon.className = 'lantern';
+                moon.textContent = '🌙';
+                moon.style.left = '50%';
+                moon.style.top = '10%';
+                moon.style.fontSize = '60px';
+                decor.appendChild(moon);
+            } else if (month === 12) {
+                // 圣诞
+                const hat = document.createElement('div');
+                hat.className = 'lantern';
+                hat.textContent = '🎄';
+                hat.style.left = '10%';
+                hat.style.top = '20%';
+                hat.style.fontSize = '50px';
+                decor.appendChild(hat);
+            }
+        }
+
+        // ========== 装扮系统 ==========
+        function updateAccessory() {
+            const existing = document.querySelector('.pig-accessory');
+            if (existing) existing.remove();
+            
+            if (state.currentAccessory) {
+                const accessory = document.createElement('div');
+                accessory.className = 'pig-accessory';
+                accessory.textContent = state.currentAccessory;
+                elements.pig.appendChild(accessory);
+            }
+            saveState();
+        }
+
+        // ========== 本地存储 ==========
+        function saveState() {
+            const data = {
+                happiness: state.happiness,
+                isSleeping: state.isSleeping,
+                currentAccessory: state.currentAccessory,
+                feedCount: state.feedCount,
+                playCount: state.playCount,
+                earlyWakeCount: state.earlyWakeCount,
+                diary: state.diary,
+                achievements: state.achievements,
+                lastInteraction: state.lastInteraction
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
         }
 
         function loadState() {
-            const stored = localStorage.getItem(STORAGE.HAPPINESS);
-            if (stored !== null) {
-                state.happiness = parseFloat(stored);
-                state.lastInteractionTime = parseInt(localStorage.getItem(STORAGE.LAST_INTERACT)) || Date.now();
-                state.isSleeping = localStorage.getItem(STORAGE.IS_SLEEPING) === 'true';
-                state.sleepStartTime = localStorage.getItem(STORAGE.SLEEP_START_TIME);
-            }
-            state.happiness = Math.min(100, Math.max(0, state.happiness));
-        }
-
-        function persistState() {
-            localStorage.setItem(STORAGE.HAPPINESS, state.happiness);
-            localStorage.setItem(STORAGE.LAST_INTERACT, state.lastInteractionTime);
-            localStorage.setItem(STORAGE.IS_SLEEPING, state.isSleeping);
-            if (state.sleepStartTime) {
-                localStorage.setItem(STORAGE.SLEEP_START_TIME, state.sleepStartTime);
-            }
-        }
-
-        // ========== 时间相关 ==========
-        function getCurrentHour() {
-            return new Date().getHours();
-        }
-
-        function canGoToSleep() {
-            const hour = getCurrentHour();
-            // 21:00 后可以手动睡觉，或者 22:00 后强制睡觉
-            return hour >= CONFIG.SLEEP_TIME.start || hour < CONFIG.WAKE_TIME.start;
-        }
-
-        function canWakeUp() {
-            const hour = getCurrentHour();
-            // 只能在 07:00-09:00 起床
-            return hour >= CONFIG.WAKE_TIME.start && hour < CONFIG.WAKE_TIME.end;
-        }
-
-        function isForcedSleepTime() {
-            const hour = getCurrentHour();
-            return hour >= 22 || hour < 7;
-        }
-
-        function checkTimeBasedEvents() {
-            const hour = getCurrentHour();
-            
-            // 强制睡觉时间
-            if (isForcedSleepTime() && !state.isSleeping) {
-                goToSleep(true);
-                showOfflineNotice('🌙 夜深了，小猪自动去睡觉了~');
-            }
-            
-            // 自动起床时间
-            if (hour >= CONFIG.WAKE_TIME.start && hour < CONFIG.WAKE_TIME.end && state.isSleeping) {
-                wakeUp(true);
-                showOfflineNotice('☀️ 天亮了，小猪自然醒啦！');
-            }
-            
-            updateSleepUI();
-        }
-
-        // ========== 睡觉/起床功能 ==========
-        function goToSleep(isAuto = false) {
-            if (state.isSleeping) return;
-            
-            // 重置其他姿态
-            state.animation.standing = 0;
-            state.animation.lying = 0;
-            state.animation.sideLying = 0;
-            state.animation.eating = 0;
-            state.animation.drinking = 0;
-            
-            state.isSleeping = true;
-            state.sleepStartTime = Date.now();
-            state.animation.sleeping = 1;
-            modifyHappiness(5, !isAuto);
-            persistState();
-            updateSleepUI();
-            
-            if (!isAuto) {
-                showOfflineNotice('💤 小猪乖乖睡觉去了，晚安~');
-            }
-        }
-
-        function wakeUp(isAuto = false) {
-            if (!state.isSleeping) return;
-            
-            // 检查是否允许起床
-            if (!isAuto && !canWakeUp()) {
-                const hour = getCurrentHour();
-                let msg = '';
-                if (hour < CONFIG.WAKE_TIME.start) {
-                    msg = '⏰ 还早呢，小猪要睡到 7 点才能起床哦~';
-                } else {
-                    msg = '⏰ 起床时间过了，小猪已经睡过头啦！';
-                }
-                showSleepStatus(msg);
-                return;
-            }
-            
-            state.isSleeping = false;
-            state.sleepStartTime = null;
-            state.animation.sleeping = 0;
-            state.animation.bounce = 2;
-            state.animation.tailWag = 6;
-            state.animation.earTwitch = 1.5;
-            modifyHappiness(20, !isAuto);
-            persistState();
-            updateSleepUI();
-            
-            if (!isAuto) {
-                showOfflineNotice('☀️ 小猪起床啦！精神满满！');
-            }
-        }
-
-        // ========== 闲置检测 ==========
-        let idleCheckInterval;
-        function startIdleCheck() {
-            idleCheckInterval = setInterval(() => {
-                if (state.isSleeping) return;
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const data = JSON.parse(saved);
+                Object.assign(state, data);
                 
-                const idleTime = (Date.now() - state.lastInteractionTime) / 1000;
-                
-                // 15秒无互动 - 趴下休息
-                if (idleTime > 15 && idleTime <= 30 && state.animation.lying === 0 && state.animation.sideLying === 0) {
-                    if (state.happiness < 40) {
-                        // 不开心时侧躺
-                        state.animation.sideLying = 1;
-                        state.animation.standing = 0;
-                    } else {
-                        // 正常趴下
-                        state.animation.lying = 1;
-                        state.animation.standing = 0;
-                    }
-                }
-                
-                // 30秒无互动 - 侧躺（如果还没躺下）
-                if (idleTime > 30 && state.animation.sideLying === 0) {
-                    state.animation.sideLying = 1;
-                    state.animation.lying = 0;
-                    state.animation.standing = 0;
-                }
-            }, 1000);
-        }
-
-        function updateSleepUI() {
-            const hour = getCurrentHour();
-            
-            if (state.isSleeping) {
-                sleepRing.textContent = '🛏️';
-                sleepRing.classList.add('sleep-disabled');
-                feedRing.classList.add('disabled');
-                drinkRing.classList.add('disabled');
-                
-                if (canWakeUp()) {
-                    sleepRing.title = '点击叫醒小猪 (7:00-9:00)';
-                    sleepStatusTip.textContent = '⏰ 可以起床啦！';
-                } else if (hour < CONFIG.WAKE_TIME.start) {
-                    sleepRing.title = '小猪还在睡觉 (7点后才能起床)';
-                    sleepStatusTip.textContent = '💤 小猪熟睡中...';
-                } else {
-                    sleepRing.title = '小猪睡过头了';
-                    sleepStatusTip.textContent = '💤 小猪还在赖床...';
-                }
-            } else {
-                sleepRing.classList.remove('sleep-disabled');
-                feedRing.classList.remove('disabled');
-                drinkRing.classList.remove('disabled');
-                
-                if (canGoToSleep()) {
-                    sleepRing.textContent = '🌙';
-                    sleepRing.title = '点击让小猪睡觉';
-                } else if (hour >= CONFIG.WAKE_TIME.start && hour < CONFIG.WAKE_TIME.end) {
-                    sleepRing.textContent = '🐓';
-                    sleepRing.title = '起床时间 (7:00-9:00)';
-                } else {
-                    const icons = ['🌸', '🌼', '🌺', '🌻'];
-                    sleepRing.textContent = icons[Math.floor(Date.now() / 10000) % icons.length];
-                    sleepRing.title = '睡觉时间：21:00后';
-                }
-                sleepStatusTip.textContent = '';
-            }
-        }
-
-        function showSleepStatus(msg) {
-            sleepStatusTip.textContent = msg;
-            sleepStatusTip.classList.add('show');
-            setTimeout(() => sleepStatusTip.classList.remove('show'), 2500);
-        }
-
-        // ========== 其他功能 ==========
-        function applyOfflineDecay() {
-            if (state.isSleeping) return;
-            const hoursPassed = (Date.now() - state.lastInteractionTime) / (1000 * 60 * 60);
-            if (hoursPassed >= 1) {
-                const decay = Math.floor(hoursPassed) * 12;
-                const oldHappy = state.happiness;
-                state.happiness = Math.max(0, state.happiness - decay);
-                if (oldHappy > state.happiness) {
-                    showOfflineNotice(`⏳ 你离开了 ${Math.floor(hoursPassed)} 小时，小猪想念你，开心值 -${oldHappy - state.happiness}`);
-                }
-                state.lastInteractionTime = Date.now();
-            }
-        }
-
-        function showOfflineNotice(msg) {
-            const notice = document.getElementById('offlineNotice');
-            notice.textContent = msg;
-            notice.style.opacity = '1';
-            setTimeout(() => notice.style.opacity = '0', 4000);
-        }
-
-        function modifyHappiness(delta, isInteraction = true) {
-            state.happiness = Math.min(100, Math.max(0, state.happiness + delta));
-            updateHappinessUI();
-            if (isInteraction) {
-                state.lastInteractionTime = Date.now();
-            }
-            persistState();
-        }
-
-        function updateHappinessUI() {
-            happinessFill.style.width = state.happiness + '%';
-        }
-
-        // ========== 气泡开场 ==========
-        function startBubbleShow() {
-            const bubbleLayer = document.getElementById('bubble-layer');
-            const mainUI = document.getElementById('main-interface');
-            const pigEmojis = ['🐷', '🐽', '🐖', '🌸', '✨', '💕', '🌙', '☁', '🎋', '🏮', '🧧', '🥮'];
-            
-            // 创建波浪式分布的气泡
-            const waveCount = 4;
-            const itemsPerWave = 12;
-            const totalItems = waveCount * itemsPerWave;
-            
-            for (let wave = 0; wave < waveCount; wave++) {
-                for (let i = 0; i < itemsPerWave; i++) {
-                    const index = wave * itemsPerWave + i;
-                    const delay = wave * 400 + i * 80 + Math.random() * 100;
-                    
-                    setTimeout(() => {
-                        const pig = document.createElement('div');
-                        pig.className = 'bubble-pig';
-                        pig.textContent = pigEmojis[Math.floor(Math.random() * pigEmojis.length)];
-                        
-                        // 波浪式水平分布
-                        const waveOffset = (i / itemsPerWave) * 90 + 5;
-                        const randomOffset = (Math.random() - 0.5) * 15;
-                        pig.style.left = Math.max(2, Math.min(95, waveOffset + randomOffset)) + '%';
-                        
-                        // 随机动画参数
-                        const duration = 5 + Math.random() * 3;
-                        pig.style.animationDuration = duration + 's';
-                        pig.style.fontSize = (20 + Math.floor(Math.random() * 36)) + 'px';
-                        
-                        // 设置CSS变量用于动画中的摆动
-                        const sway1 = (Math.random() - 0.5) * 60;
-                        const sway2 = (Math.random() - 0.5) * 80;
-                        const sway3 = (Math.random() - 0.5) * 60;
-                        const rot1 = -10 + Math.random() * 20;
-                        const rot2 = -8 + Math.random() * 16;
-                        const rot3 = -6 + Math.random() * 12;
-                        const rot4 = -5 + Math.random() * 10;
-                        
-                        pig.style.setProperty('--sway-1', sway1 + 'px');
-                        pig.style.setProperty('--sway-2', sway2 + 'px');
-                        pig.style.setProperty('--sway-3', sway3 + 'px');
-                        pig.style.setProperty('--sway-4', (Math.random() - 0.5) * 40 + 'px');
-                        pig.style.setProperty('--rot-1', rot1 + 'deg');
-                        pig.style.setProperty('--rot-2', rot2 + 'deg');
-                        pig.style.setProperty('--rot-3', rot3 + 'deg');
-                        pig.style.setProperty('--rot-4', rot4 + 'deg');
-                        
-                        bubbleLayer.appendChild(pig);
-                        setTimeout(() => pig.remove(), (duration + 1) * 1000);
-                    }, delay);
+                // 检查离线时间
+                const hoursOffline = (Date.now() - state.lastInteraction) / 3600000;
+                if (hoursOffline >= 1 && !state.isSleeping) {
+                    state.happiness = Math.max(0, state.happiness - Math.floor(hoursOffline) * 20);
                 }
             }
-            
-            // 主界面在动画进行到一半时渐显
-            setTimeout(() => mainUI.classList.add('show'), 2000);
-        }
-
-        // ========== 超萌小猪绘制（优化版）==========
-        function drawPig() {
-            state.frameCount++;
-            ctx.clearRect(0, 0, CONFIG.CANVAS_SIZE, CONFIG.CANVAS_SIZE);
-            
-            const centerX = CONFIG.CANVAS_SIZE / 2;
-            const centerY = CONFIG.CANVAS_SIZE / 2 + 20;
-            const time = Date.now() / 1000;
-            
-            // 计算闲置时间
-            const idleTime = (Date.now() - state.lastInteractionTime) / 1000;
-            
-            // 确定当前姿态
-            let pose = 'normal'; // normal, standing, lying, side, eating, drinking
-            if (state.isSleeping) pose = 'sleeping';
-            else if (state.animation.eating > 0.3) pose = 'eating';
-            else if (state.animation.drinking > 0.3) pose = 'drinking';
-            else if (state.animation.standing > 0) pose = 'standing';
-            else if (state.animation.lying > 0) pose = 'lying';
-            else if (state.animation.sideLying > 0) pose = 'side';
-            else if (idleTime > 10 && state.happiness < 50) pose = 'side';
-            else if (idleTime > 15) pose = 'lying';
-            
-            // 呼吸动画 - 更自然的节奏
-            const breathe = Math.sin(time * (pose === 'sleeping' ? 0.6 : 1.2)) * (pose === 'sleeping' ? 1.5 : 1);
-            const microBreathe = Math.sin(time * 3) * 0.2;
-            
-            // 弹跳动画 - 更有弹性
-            let bounce = 0;
-            if (state.animation.bounce > 0) {
-                const bouncePhase = (time * 15) % (Math.PI * 2);
-                bounce = state.animation.bounce * Math.sin(bouncePhase) * 8 * Math.exp(-bouncePhase / 3);
-            }
-            
-            // 确定表情
-            let expression = 'happy';
-            if (pose === 'sleeping') expression = 'sleeping';
-            else if (state.happiness > 80) expression = 'excited';
-            else if (state.happiness > 60) expression = 'happy';
-            else if (state.happiness > 40) expression = 'content';
-            else if (state.happiness > 20) expression = 'sad';
-            else expression = 'angry';
-
-            // 根据姿态调整绘制
-            ctx.save();
-            
-            if (pose === 'lying' || pose === 'side') {
-                // 趴下/侧躺姿态 - 更圆润的压扁效果
-                ctx.translate(centerX, centerY + 55);
-                ctx.scale(1.3, 0.5);
-                drawCutePigBody(pose, expression, time, breathe, microBreathe, bounce, 0);
-            } else if (pose === 'standing') {
-                // 站立姿态 - 更有活力的身体
-                const standBounce = Math.sin(time * 6) * 4 * state.animation.standing;
-                ctx.translate(centerX, centerY - standBounce - 15);
-                ctx.scale(0.9, 1.15);
-                drawCutePigBody(pose, expression, time, breathe, microBreathe, bounce, state.animation.standing);
-            } else if (pose === 'eating' || pose === 'drinking') {
-                // 低头进食/喝水
-                ctx.translate(centerX, centerY + 20);
-                ctx.rotate(0.25);
-                drawCutePigBody(pose, expression, time, breathe, microBreathe, bounce, 0);
-            } else {
-                // 正常姿态 - 轻微摇摆
-                const idleSway = Math.sin(time * 0.8) * 2;
-                ctx.translate(centerX + idleSway, centerY + bounce);
-                drawCutePigBody(pose, expression, time, breathe, microBreathe, bounce, 0);
-            }
-            
-            ctx.restore();
-
-            // 绘制特效
-            if (state.animation.eating > 0) drawEatingEffect(centerX + 80, centerY - 20);
-            if (state.animation.drinking > 0) drawDrinkingEffect(centerX + 80, centerY - 20);
-            if (state.animation.playing > 0) drawPlayingEffect(centerX, centerY);
-            if (state.animation.heartFloat > 0) drawHeartEffect(centerX, centerY - 60);
-            if (pose === 'sleeping') drawSleepEffect(centerX - 60, centerY - 80, time);
-            if (pose === 'standing') drawExcitedEffect(centerX, centerY - 100, time);
-
-            // 动画衰减
-            Object.keys(state.animation).forEach(key => {
-                if (state.animation[key] > 0 && !['sleeping'].includes(key)) {
-                    state.animation[key] *= 0.985;
-                    if (state.animation[key] < 0.01) state.animation[key] = 0;
-                }
-            });
-
-            requestAnimationFrame(drawPig);
-        }
-
-        // 绘制超萌小猪身体（优化版）
-        function drawCutePigBody(pose, expression, time, breathe, microBreathe, bounce, standIntensity) {
-            const isSleeping = pose === 'sleeping';
-            const isLying = pose === 'lying' || pose === 'side';
-            const isStanding = pose === 'standing';
-            const isEating = pose === 'eating' || pose === 'drinking';
-            
-            // 尾巴摇摆计算 - 更自然的摆动
-            const tailWagBase = Math.sin(time * (isSleeping ? 0.4 : 1.8)) * 0.08;
-            const tailWagExcited = state.animation.tailWag > 0 ? 
-                Math.sin(time * 10 + Math.sin(time * 3) * 0.5) * state.animation.tailWag * 0.2 : 0;
-            const tailWag = tailWagBase + tailWagExcited;
-            
-            // ========== 卷尾巴（更Q弹）==========
-            ctx.save();
-            ctx.translate(isLying ? 115 : 98, isLying ? -15 : 0);
-            ctx.rotate(tailWag + (isLying ? 0.4 : 0));
-            
-            // 尾巴主体 - 更粗更可爱
-            ctx.beginPath();
-            ctx.moveTo(0, 0);
-            ctx.bezierCurveTo(18, -22, 42, -18, 38, 12);
-            ctx.bezierCurveTo(34, 35, 14, 30, 6, 16);
-            ctx.strokeStyle = '#a06060';
-            ctx.lineWidth = 7;
-            ctx.lineCap = 'round';
-            ctx.stroke();
-            
-            // 尾巴内侧
-            ctx.beginPath();
-            ctx.moveTo(1, 1);
-            ctx.bezierCurveTo(16, -18, 38, -15, 34, 10);
-            ctx.strokeStyle = '#ffc0cb';
-            ctx.lineWidth = 4;
-            ctx.stroke();
-            
-            // 尾巴尖小卷 - 更圆润
-            ctx.beginPath();
-            ctx.arc(6, 16, 5, 0, Math.PI * 2);
-            ctx.fillStyle = '#ffc0cb';
-            ctx.fill();
-            ctx.strokeStyle = '#a06060';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            ctx.restore();
-
-            // ========== 后腿（更圆润）==========
-            const legGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, 28);
-            legGrad.addColorStop(0, '#ffe0e6');
-            legGrad.addColorStop(0.5, '#ffc0cb');
-            legGrad.addColorStop(1, '#ffb0c0');
-            
-            if (!isLying) {
-                const legOffset = isStanding ? -12 : 0;
-                
-                // 左后腿 - 更圆润
-                ctx.fillStyle = legGrad;
-                ctx.strokeStyle = '#a06060';
-                ctx.lineWidth = 2.5;
-                ctx.beginPath();
-                ctx.ellipse(-52, 68 + legOffset, 22, isStanding ? 32 : 26, 0.15, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
-                
-                // 左后脚掌 - 更可爱
-                ctx.fillStyle = '#ffb0c0';
-                ctx.beginPath();
-                ctx.ellipse(-55, 85 + legOffset, 16, 12, 0, 0, Math.PI * 2);
-                ctx.fill();
-                // 脚趾 - 更圆润
-                ctx.fillStyle = '#ffa0b0';
-                for (let i = -1; i <= 1; i++) {
-                    ctx.beginPath();
-                    ctx.arc(-55 + i * 7, 88 + legOffset, 3.5, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-                
-                // 右后腿
-                ctx.fillStyle = legGrad;
-                ctx.beginPath();
-                ctx.ellipse(52, 68 + legOffset, 22, isStanding ? 32 : 26, -0.15, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
-                
-                // 右后脚掌
-                ctx.fillStyle = '#ffb0c0';
-                ctx.beginPath();
-                ctx.ellipse(55, 85 + legOffset, 16, 12, 0, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.fillStyle = '#ffa0b0';
-                for (let i = -1; i <= 1; i++) {
-                    ctx.beginPath();
-                    ctx.arc(55 + i * 7, 88 + legOffset, 3.5, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-            } else {
-                // 趴下时的后腿
-                ctx.fillStyle = legGrad;
-                ctx.strokeStyle = '#a06060';
-                ctx.lineWidth = 2.5;
-                
-                ctx.beginPath();
-                ctx.ellipse(-78, 42, 20, 14, -0.25, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
-                
-                ctx.beginPath();
-                ctx.ellipse(78, 42, 20, 14, 0.25, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
-            }
-
-            // ========== 身体（更圆润可爱）==========
-            const bodyScale = 1 + (breathe + microBreathe) * 0.003;
-            ctx.save();
-            ctx.scale(bodyScale, bodyScale);
-            
-            // 身体渐变 - 更粉嫩
-            const bodyGrad = ctx.createRadialGradient(-35, -45, 0, 0, 0, 100);
-            bodyGrad.addColorStop(0, '#fff8fa');
-            bodyGrad.addColorStop(0.2, '#ffeef2');
-            bodyGrad.addColorStop(0.5, '#ffd8e0');
-            bodyGrad.addColorStop(0.8, '#ffc0cb');
-            bodyGrad.addColorStop(1, '#ffb0c0');
-            
-            ctx.fillStyle = bodyGrad;
-            ctx.beginPath();
-            ctx.ellipse(0, 8, isLying ? 115 : 95, isLying ? 68 : 78, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.strokeStyle = '#a06060';
-            ctx.lineWidth = 3;
-            ctx.stroke();
-            
-            // 身体纹理 - 更淡更可爱
-            ctx.strokeStyle = 'rgba(160, 96, 96, 0.06)';
-            ctx.lineWidth = 1;
-            for (let i = -50; i <= 50; i += 25) {
-                ctx.beginPath();
-                ctx.arc(i, 8, 35, 0.4, Math.PI - 0.4);
-                ctx.stroke();
-            }
-            
-            // 身体阴影
-            ctx.fillStyle = 'rgba(160, 96, 96, 0.1)';
-            ctx.beginPath();
-            ctx.ellipse(0, 75, 70, 14, 0, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // 身体高光 - 更明显
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-            ctx.beginPath();
-            ctx.ellipse(-40, -40, 40, 28, -0.4, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.restore();
-
-            // ========== 前腿（更圆润）==========
-            if (!isLying) {
-                const frontLegOffset = isEating ? 10 : 0;
-                
-                ctx.fillStyle = legGrad;
-                ctx.strokeStyle = '#a06060';
-                
-                // 左前腿
-                ctx.beginPath();
-                ctx.ellipse(-38, 76 + frontLegOffset, 20, isStanding ? 24 : 28, 0.08, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
-                
-                // 左前脚掌
-                ctx.fillStyle = '#ffb0c0';
-                ctx.beginPath();
-                ctx.ellipse(-41, 93 + frontLegOffset, 14, 11, 0, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.fillStyle = '#ffa0b0';
-                for (let i = -1; i <= 1; i++) {
-                    ctx.beginPath();
-                    ctx.arc(-41 + i * 6, 96 + frontLegOffset, 3, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-                
-                ctx.fillStyle = legGrad;
-                // 右前腿
-                ctx.beginPath();
-                ctx.ellipse(38, 76 + frontLegOffset, 20, isStanding ? 24 : 28, -0.08, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
-                
-                // 右前脚掌
-                ctx.fillStyle = '#ffb0c0';
-                ctx.beginPath();
-                ctx.ellipse(41, 93 + frontLegOffset, 14, 11, 0, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.fillStyle = '#ffa0b0';
-                for (let i = -1; i <= 1; i++) {
-                    ctx.beginPath();
-                    ctx.arc(41 + i * 6, 96 + frontLegOffset, 3, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-            } else {
-                // 趴下时的前腿
-                ctx.fillStyle = legGrad;
-                ctx.strokeStyle = '#a06060';
-                
-                ctx.beginPath();
-                ctx.ellipse(-68, -28, 18, 12, -0.4, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
-                
-                ctx.beginPath();
-                ctx.ellipse(68, -28, 18, 12, 0.4, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
-            }
-
-            // ========== 头部（更大更圆）==========
-            const headBaseY = isLying ? -12 : -48;
-            const headY = headBaseY + Math.sin(time * (isSleeping ? 0.5 : 1)) * (isSleeping ? 1.5 : 1);
-            const headTilt = isEating ? 0.3 : Math.sin(time * 0.6) * 0.015;
-            
-            ctx.save();
-            ctx.rotate(headTilt);
-            
-            // 头部渐变 - 更粉嫩
-            const headGrad = ctx.createRadialGradient(-30, headY - 40, 0, 0, headY, 82);
-            headGrad.addColorStop(0, '#fffafc');
-            headGrad.addColorStop(0.3, '#fff0f3');
-            headGrad.addColorStop(0.65, '#ffd8e0');
-            headGrad.addColorStop(1, '#ffc0cb');
-            
-            ctx.fillStyle = headGrad;
-            ctx.beginPath();
-            ctx.arc(0, headY, 78, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.strokeStyle = '#a06060';
-            ctx.lineWidth = 3;
-            ctx.stroke();
-
-            // ========== 耳朵（更圆润可爱）==========
-            const earTwitch = state.animation.earTwitch > 0 ? 
-                Math.sin(time * 20 + Math.sin(time * 8)) * state.animation.earTwitch * 0.1 : 0;
-            
-            // 左耳
-            ctx.save();
-            ctx.translate(-55, headY - 52);
-            ctx.rotate(-0.35 + earTwitch + (isSleeping ? 0.15 : 0));
-            
-            ctx.fillStyle = '#ffc0cb';
-            ctx.beginPath();
-            ctx.ellipse(0, 0, 26, 38, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.strokeStyle = '#a06060';
-            ctx.lineWidth = 2.5;
-            ctx.stroke();
-            
-            ctx.fillStyle = '#ffb0c0';
-            ctx.beginPath();
-            ctx.ellipse(0, 5, 16, 22, 0, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-            ctx.beginPath();
-            ctx.ellipse(-7, -12, 6, 9, -0.3, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
-            
-            // 右耳
-            ctx.save();
-            ctx.translate(55, headY - 52);
-            ctx.rotate(0.35 - earTwitch - (isSleeping ? 0.15 : 0));
-            
-            ctx.fillStyle = '#ffc0cb';
-            ctx.beginPath();
-            ctx.ellipse(0, 0, 26, 38, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.strokeStyle = '#a06060';
-            ctx.stroke();
-            
-            ctx.fillStyle = '#ffb0c0';
-            ctx.beginPath();
-            ctx.ellipse(0, 5, 16, 22, 0, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-            ctx.beginPath();
-            ctx.ellipse(7, -12, 6, 9, 0.3, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
-
-            // ========== 腮红（更可爱）==========
-            const blushOpacity = (expression === 'happy' || expression === 'excited' || expression === 'content') ? 0.6 : 0.25;
-            const blushGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, 25);
-            blushGrad.addColorStop(0, `rgba(255, 150, 170, ${blushOpacity})`);
-            blushGrad.addColorStop(0.5, `rgba(255, 180, 195, ${blushOpacity * 0.7})`);
-            blushGrad.addColorStop(1, `rgba(255, 180, 195, 0)`);
-            
-            ctx.fillStyle = blushGrad;
-            ctx.beginPath();
-            ctx.ellipse(-52, headY + 8, 22, 16, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.ellipse(52, headY + 8, 22, 16, 0, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // 腮红高光点
-            ctx.fillStyle = 'rgba(255, 230, 235, 0.7)';
-            ctx.beginPath();
-            ctx.arc(-56, headY + 4, 5, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(48, headY + 4, 5, 0, Math.PI * 2);
-            ctx.fill();
-
-            // ========== 眼睛 ==========
-            drawCuteEyes(expression, headY, time, isSleeping);
-
-            // ========== 鼻子 ==========
-            drawCuteNose(headY);
-
-            // ========== 嘴巴 ==========
-            drawCuteMouth(expression, headY);
-
-            ctx.restore();
-        }
-
-        // 绘制眼睛
-        function drawEyes(expression, headY, time, isSleeping) {
-            const blinkPhase = (time * 2.5) % 10;
-            const isBlinking = blinkPhase > 9.3 || state.animation.blink > 0;
-            
-            if (isSleeping) {
-                // 睡觉闭眼
-                ctx.strokeStyle = '#5d3a1a';
-                ctx.lineWidth = 3;
-                ctx.lineCap = 'round';
-                const sleepBreath = Math.sin(time * 0.8) * 1.5;
-                
-                // 左闭眼
-                ctx.beginPath();
-                ctx.arc(-32, headY - 8 + sleepBreath, 14, 0.25, Math.PI - 0.25);
-                ctx.stroke();
-                
-                // 右闭眼
-                ctx.beginPath();
-                ctx.arc(32, headY - 8 + sleepBreath, 14, 0.25, Math.PI - 0.25);
-                ctx.stroke();
-                
-                // 睫毛
-                ctx.lineWidth = 1.5;
-                ctx.beginPath();
-                ctx.moveTo(-42, headY - 12 + sleepBreath);
-                ctx.lineTo(-46, headY - 16 + sleepBreath);
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.moveTo(42, headY - 12 + sleepBreath);
-                ctx.lineTo(46, headY - 16 + sleepBreath);
-                ctx.stroke();
-                
-            } else if (isBlinking) {
-                // 眨眼
-                ctx.strokeStyle = '#5d3a1a';
-                ctx.lineWidth = 3.5;
-                ctx.lineCap = 'round';
-                
-                ctx.beginPath();
-                ctx.moveTo(-48, headY - 8);
-                ctx.quadraticCurveTo(-32, headY - 2, -16, headY - 8);
-                ctx.stroke();
-                
-                ctx.beginPath();
-                ctx.moveTo(16, headY - 8);
-                ctx.quadraticCurveTo(32, headY - 2, 48, headY - 8);
-                ctx.stroke();
-                
-            } else {
-                // 睁眼
-                let eyeOffsetX = 0, eyeOffsetY = 0;
-                if (state.isLookingAtMouse && !isSleeping) {
-                    const dx = state.mousePos.x - CONFIG.CANVAS_SIZE / 2;
-                    const dy = state.mousePos.y - CONFIG.CANVAS_SIZE / 2;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist > 0) {
-                        eyeOffsetX = Math.min(Math.max(dx / dist * 4, -3), 3);
-                        eyeOffsetY = Math.min(Math.max(dy / dist * 2.5, -2), 2);
-                    }
-                }
-                
-                // 眼睛大小根据表情变化
-                const eyeSize = expression === 'excited' ? 14 : (expression === 'sad' ? 10 : 11);
-                
-                // 左眼白
-                ctx.fillStyle = '#fff';
-                ctx.beginPath();
-                ctx.ellipse(-32 + eyeOffsetX, headY - 10 + eyeOffsetY, eyeSize + 2, eyeSize + 4, 0, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.strokeStyle = '#8b5a5a';
-                ctx.lineWidth = 1.5;
-                ctx.stroke();
-                
-                // 右眼白
-                ctx.beginPath();
-                ctx.ellipse(32 + eyeOffsetX, headY - 10 + eyeOffsetY, eyeSize + 2, eyeSize + 4, 0, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
-                
-                // 左瞳孔
-                ctx.fillStyle = '#3d2914';
-                ctx.beginPath();
-                ctx.arc(-32 + eyeOffsetX, headY - 10 + eyeOffsetY, eyeSize, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // 右瞳孔
-                ctx.beginPath();
-                ctx.arc(32 + eyeOffsetX, headY - 10 + eyeOffsetY, eyeSize, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // 眼睛高光
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-                ctx.beginPath();
-                ctx.arc(-36 + eyeOffsetX, headY - 14 + eyeOffsetY, 4.5, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.beginPath();
-                ctx.arc(28 + eyeOffsetX, headY - 14 + eyeOffsetY, 4.5, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // 小高光点
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-                ctx.beginPath();
-                ctx.arc(-28 + eyeOffsetX, headY - 6 + eyeOffsetY, 2, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.beginPath();
-                ctx.arc(36 + eyeOffsetX, headY - 6 + eyeOffsetY, 2, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // 眉毛
-                ctx.strokeStyle = '#8b5a5a';
-                ctx.lineWidth = 2.5;
-                ctx.lineCap = 'round';
-                
-                if (expression === 'angry') {
-                    ctx.beginPath();
-                    ctx.moveTo(-50, headY - 28);
-                    ctx.lineTo(-20, headY - 20);
-                    ctx.stroke();
-                    ctx.beginPath();
-                    ctx.moveTo(50, headY - 28);
-                    ctx.lineTo(20, headY - 20);
-                    ctx.stroke();
-                } else if (expression === 'sad') {
-                    ctx.beginPath();
-                    ctx.moveTo(-48, headY - 22);
-                    ctx.lineTo(-18, headY - 18);
-                    ctx.stroke();
-                    ctx.beginPath();
-                    ctx.moveTo(48, headY - 22);
-                    ctx.lineTo(18, headY - 18);
-                    ctx.stroke();
-                } else if (expression === 'happy' || expression === 'content' || expression === 'excited') {
-                    ctx.beginPath();
-                    ctx.moveTo(-48, headY - 20);
-                    ctx.quadraticCurveTo(-32, headY - 30, -16, headY - 20);
-                    ctx.stroke();
-                    ctx.beginPath();
-                    ctx.moveTo(16, headY - 20);
-                    ctx.quadraticCurveTo(32, headY - 30, 48, headY - 20);
-                    ctx.stroke();
-                }
-            }
-        }
-
-        // 绘制鼻子
-        function drawNose(headY) {
-            // 鼻子渐变
-            const noseGrad = ctx.createRadialGradient(-4, headY + 10, 0, 0, headY + 16, 24);
-            noseGrad.addColorStop(0, '#ffd5dc');
-            noseGrad.addColorStop(0.5, '#ffc0cb');
-            noseGrad.addColorStop(1, '#ffaeb9');
-            
-            ctx.fillStyle = noseGrad;
-            ctx.beginPath();
-            ctx.ellipse(0, headY + 16, 24, 18, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.strokeStyle = '#c47a7a';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            
-            // 鼻子高光
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-            ctx.beginPath();
-            ctx.ellipse(-8, headY + 10, 8, 5, -0.3, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // 鼻孔
-            ctx.fillStyle = '#6a3a3a';
-            ctx.beginPath();
-            ctx.ellipse(-8, headY + 18, 4.5, 6, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.ellipse(8, headY + 18, 4.5, 6, 0, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // 鼻孔高光
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-            ctx.beginPath();
-            ctx.arc(-10, headY + 15, 1.5, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(6, headY + 15, 1.5, 0, Math.PI * 2);
-            ctx.fill();
-        }
-
-        // 绘制嘴巴
-        function drawMouth(expression, headY) {
-            ctx.strokeStyle = '#8b5a5a';
-            ctx.lineWidth = 2.5;
-            ctx.lineCap = 'round';
-            
-            if (expression === 'happy' || expression === 'excited' || expression === 'content') {
-                // 开心笑
-                ctx.beginPath();
-                ctx.arc(0, headY + 38, 12, 0.15, Math.PI - 0.15);
-                ctx.stroke();
-                
-                // 舌头
-                ctx.fillStyle = '#ff9999';
-                ctx.beginPath();
-                ctx.ellipse(0, headY + 46, 7, 5, 0, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // 舌头中线
-                ctx.strokeStyle = '#e07777';
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.moveTo(0, headY + 44);
-                ctx.lineTo(0, headY + 49);
-                ctx.stroke();
-                
-            } else if (expression === 'sad') {
-                // 难过
-                ctx.beginPath();
-                ctx.arc(0, headY + 52, 10, Math.PI + 0.2, -0.2);
-                ctx.stroke();
-                
-            } else if (expression === 'angry') {
-                // 生气
-                ctx.beginPath();
-                ctx.moveTo(-12, headY + 42);
-                ctx.lineTo(12, headY + 42);
-                ctx.stroke();
-                
-                // 咬牙
-                ctx.fillStyle = '#fff';
-                ctx.beginPath();
-                ctx.rect(-8, headY + 40, 16, 4);
-                ctx.fill();
-                ctx.strokeStyle = '#8b5a5a';
-                ctx.lineWidth = 1;
-                ctx.stroke();
-                
-            } else {
-                // 普通
-                ctx.beginPath();
-                ctx.arc(0, headY + 38, 12, 0.15, Math.PI - 0.15);
-                ctx.stroke();
-            }
-        }
-
-        // 睡觉特效
-        function drawSleepEffect(x, y, time) {
-            const snoreAlpha = 0.5 + Math.sin(time * 2) * 0.3;
-            
-            // Zzz 符号
-            ctx.font = 'bold 24px serif';
-            ctx.fillStyle = `rgba(100, 150, 180, ${snoreAlpha})`;
-            ctx.fillText('Z', x, y + Math.sin(time * 1.5) * 5);
-            
-            ctx.font = 'bold 18px serif';
-            ctx.fillStyle = `rgba(100, 150, 180, ${snoreAlpha * 0.8})`;
-            ctx.fillText('z', x + 18, y - 15 + Math.sin(time * 1.5 + 1) * 4);
-            
-            ctx.font = 'bold 14px serif';
-            ctx.fillStyle = `rgba(100, 150, 180, ${snoreAlpha * 0.6})`;
-            ctx.fillText('z', x + 32, y - 28 + Math.sin(time * 1.5 + 2) * 3);
-            
-            // 鼻涕泡
-            const bubbleSize = 10 + Math.sin(time * 1.2) * 4;
-            ctx.fillStyle = 'rgba(200, 230, 255, 0.5)';
-            ctx.strokeStyle = 'rgba(150, 200, 230, 0.4)';
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            ctx.arc(x + 50, y + 30, bubbleSize, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.stroke();
-            
-            // 泡高光
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-            ctx.beginPath();
-            ctx.arc(x + 46, y + 26, 3, 0, Math.PI * 2);
-            ctx.fill();
-        }
-
-        // 兴奋特效（站立时）
-        function drawExcitedEffect(x, y, time) {
-            ctx.save();
-            ctx.globalAlpha = 0.7;
-            
-            // 旋转的星星
-            for (let i = 0; i < 6; i++) {
-                const angle = time * 3 + i * Math.PI / 3;
-                const radius = 50 + Math.sin(time * 2 + i) * 15;
-                const sx = x + Math.cos(angle) * radius;
-                const sy = y + Math.sin(angle) * radius * 0.6;
-                
-                ctx.font = `${16 + i * 2}px serif`;
-                ctx.fillStyle = `hsl(${40 + i * 30}, 80%, 60%)`;
-                ctx.fillText('✨', sx, sy);
-            }
-            
-            ctx.restore();
-        }
-
-        // ========== 特效绘制（带位置参数）==========
-        function drawEatingEffect(x, y) {
-            const alpha = state.animation.eating;
-            const foods = ['🍰', '🍪', '🧁', '🥕', '🍎', '🥬'];
-            const food = foods[Math.floor(Date.now() / 800) % foods.length];
-            const offsetY = Math.sin(Date.now() / 200) * 5;
-            
-            ctx.save();
-            ctx.globalAlpha = alpha;
-            ctx.font = '42px serif';
-            ctx.fillText(food, x, y + offsetY);
-            
-            // 咀嚼效果
-            ctx.font = '24px serif';
-            ctx.fillStyle = '#ff6b9d';
-            ctx.fillText('😋', x + 25, y - 20 + offsetY);
-            ctx.fillText('✨', x - 20, y + 10 + offsetY);
-            ctx.restore();
-        }
-
-        function drawDrinkingEffect(x, y) {
-            const alpha = state.animation.drinking;
-            const time = Date.now() / 150;
-            
-            ctx.save();
-            ctx.globalAlpha = alpha;
-            
-            // 水滴
-            for (let i = 0; i < 5; i++) {
-                const dx = Math.sin(time + i * 0.8) * 20;
-                const dy = i * 10;
-                const size = 4 + i * 1.2;
-                ctx.fillStyle = `rgba(100, 180, 255, ${alpha * (0.9 - i * 0.15)})`;
-                ctx.beginPath();
-                ctx.arc(x + dx, y + dy, size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-            
-            ctx.font = '36px serif';
-            ctx.fillText('🧃', x + 10, y - 15);
-            ctx.restore();
-        }
-
-        function drawPlayingEffect(x, y) {
-            const alpha = state.animation.playing;
-            const time = Date.now() / 80;
-            
-            ctx.save();
-            ctx.globalAlpha = alpha;
-            
-            // 旋转星星
-            for (let i = 0; i < 8; i++) {
-                const angle = time + i * Math.PI / 4;
-                const radius = 60 + Math.sin(time * 2 + i) * 20;
-                const sx = x + Math.cos(angle) * radius;
-                const sy = y + Math.sin(angle) * radius * 0.5;
-                ctx.font = `${16 + i * 2}px serif`;
-                ctx.fillStyle = `hsl(${45 + i * 25}, 85%, 65%)`;
-                ctx.fillText('✨', sx, sy);
-            }
-            
-            // 音符
-            ctx.font = '32px serif';
-            ctx.fillText('🎵', x - 70, y - 50);
-            ctx.fillText('🎶', x + 70, y - 30);
-            ctx.restore();
-        }
-
-        function drawHeartEffect(x, y) {
-            const alpha = state.animation.heartFloat;
-            const time = Date.now() / 200;
-            
-            ctx.save();
-            ctx.globalAlpha = alpha;
-            ctx.font = '28px serif';
-            
-            const hearts = ['💕', '💖', '💗', '💝'];
-            for (let i = 0; i < 4; i++) {
-                const hx = x - 60 + i * 40 + Math.sin(time + i) * 8;
-                const hy = y - alpha * 30 + Math.cos(time + i * 0.5) * 4;
-                ctx.fillText(hearts[i], hx, hy);
-            }
-            ctx.restore();
-        }
-
-        // ========== 交互功能 ==========
-        function feedAction() {
-            if (state.isSleeping) {
-                showOfflineNotice('💤 小猪在睡觉呢，不要打扰它~');
-                return;
-            }
-            // 重置姿态
-            state.animation.lying = 0;
-            state.animation.sideLying = 0;
-            
-            state.animation.eating = 1;
-            state.animation.bounce = 1.5;
-            state.animation.tailWag = 8;
-            state.animation.earTwitch = 1.5;
-            modifyHappiness(15);
-            
-            const foods = ['🍰', '🍪', '🧁', '🥕', '🍎'];
-            feedRing.textContent = foods[Math.floor(Math.random() * foods.length)];
-            
-            showOfflineNotice('🍰 小猪吃得津津有味！');
-        }
-
-        function drinkAction() {
-            if (state.isSleeping) {
-                showOfflineNotice('💤 小猪在睡觉呢，不要打扰它~');
-                return;
-            }
-            // 重置姿态
-            state.animation.lying = 0;
-            state.animation.sideLying = 0;
-            
-            state.animation.drinking = 1;
-            state.animation.bounce = 1;
-            state.animation.tailWag = 4;
-            modifyHappiness(10);
-            
-            showOfflineNotice('💧 小猪咕嘟咕嘟喝水~');
-        }
-
-        // 点击玩耍 - 站立摇尾巴
-        function playAction() {
-            if (state.isSleeping) {
-                showOfflineNotice('💤 小猪在睡觉呢，轻轻点击叫醒它~');
-                return;
-            }
-            
-            // 重置其他姿态
-            state.animation.lying = 0;
-            state.animation.sideLying = 0;
-            
-            // 站立姿态 + 摇尾巴
-            state.animation.standing = 1;
-            state.animation.playing = 1;
-            state.animation.tailWag = 12;
-            state.animation.earTwitch = 2;
-            state.animation.heartFloat = 1;
-            state.animation.bounce = 2;
-            
-            modifyHappiness(8);
-            showOfflineNotice('🎵 小猪开心地站立摇尾巴！');
-        }
-
-        // 撒娇/躺下动作
-        function saJiaoAction() {
-            if (state.isSleeping) return;
-            
-            state.animation.standing = 0;
-            state.animation.lying = 1;
-            state.animation.tailWag = 3;
-            state.animation.heartFloat = 1;
-            
-            modifyHappiness(5);
-            showOfflineNotice('🥰 小猪躺下撒娇~');
-        }
-
-        // 侧躺休息
-        function sideRestAction() {
-            if (state.isSleeping) return;
-            
-            state.animation.standing = 0;
-            state.animation.lying = 0;
-            state.animation.sideLying = 1;
-            state.animation.tailWag = 1;
-            
-            showOfflineNotice('😴 小猪侧躺着休息...');
-        }
-
-        // ========== 运势功能 ==========
-        function generateDailyFortune() {
-            const today = new Date().toDateString();
-            const savedDate = localStorage.getItem(STORAGE.FORTUNE_DATE);
-            
-            if (savedDate === today) {
-                return JSON.parse(localStorage.getItem(STORAGE.FORTUNE_DATA));
-            }
-            
-            const fortune = {
-                career: 60 + Math.floor(Math.random() * 35),
-                love: 55 + Math.floor(Math.random() * 40),
-                health: 65 + Math.floor(Math.random() * 30),
-                wealth: 50 + Math.floor(Math.random() * 45),
-                guiRen: FORTUNE_DATA.guiRen[Math.floor(Math.random() * 12)],
-                luckyNum: FORTUNE_DATA.luckyNum[Math.floor(Math.random() * 10)],
-                luckyColor: FORTUNE_DATA.luckyColor[Math.floor(Math.random() * 10)],
-                xiShen: FORTUNE_DATA.xiShen[Math.floor(Math.random() * 8)],
-                yi: FORTUNE_DATA.yi[Math.floor(Math.random() * 4)],
-                ji: FORTUNE_DATA.ji[Math.floor(Math.random() * 4)],
-                quote: FORTUNE_DATA.quotes[Math.floor(Math.random() * 8)]
-            };
-            
-            localStorage.setItem(STORAGE.FORTUNE_DATE, today);
-            localStorage.setItem(STORAGE.FORTUNE_DATA, JSON.stringify(fortune));
-            return fortune;
-        }
-
-        function showFortuneModal() {
-            const fortune = generateDailyFortune();
-            
-            document.getElementById('careerBar').style.width = fortune.career + '%';
-            document.getElementById('careerValue').textContent = fortune.career;
-            document.getElementById('loveBar').style.width = fortune.love + '%';
-            document.getElementById('loveValue').textContent = fortune.love;
-            document.getElementById('healthBar').style.width = fortune.health + '%';
-            document.getElementById('healthValue').textContent = fortune.health;
-            document.getElementById('wealthBar').style.width = fortune.wealth + '%';
-            document.getElementById('wealthValue').textContent = fortune.wealth;
-            
-            document.getElementById('guiRen').textContent = fortune.guiRen;
-            document.getElementById('luckyNum').textContent = fortune.luckyNum;
-            document.getElementById('luckyColor').textContent = fortune.luckyColor;
-            document.getElementById('xiShen').textContent = fortune.xiShen;
-            document.getElementById('yiContent').innerHTML = fortune.yi;
-            document.getElementById('jiContent').innerHTML = fortune.ji;
-            document.getElementById('fortuneQuote').textContent = fortune.quote;
-            
-            document.getElementById('fortuneModal').classList.remove('hidden');
+            updatePigState();
+            updateDiary();
         }
 
         // ========== 事件绑定 ==========
         function bindEvents() {
-            feedRing.addEventListener('click', feedAction);
-            drinkRing.addEventListener('click', drinkAction);
-            
-            sleepRing.addEventListener('click', () => {
-                if (state.isSleeping) {
-                    wakeUp(false);
-                } else {
-                    if (canGoToSleep()) {
-                        goToSleep(false);
-                    } else {
-                        showSleepStatus('⏰ 还不能睡觉哦，21:00后才可以~');
+            // 运势弹窗
+            if (elements.crystalBall) {
+                elements.crystalBall.addEventListener('click', () => {
+                    elements.fortuneModal.classList.add('show');
+                });
+            }
+
+            const closeFortuneBtn = document.getElementById('closeFortuneBtn');
+            if (closeFortuneBtn) {
+                closeFortuneBtn.addEventListener('click', () => {
+                    elements.fortuneModal.classList.remove('show');
+                });
+            }
+
+            if (elements.fortuneModal) {
+                elements.fortuneModal.addEventListener('click', (e) => {
+                    if (e.target === elements.fortuneModal) {
+                        elements.fortuneModal.classList.remove('show');
                     }
+                });
+            }
+
+            const shakeBtn = document.getElementById('shakeBtn');
+            if (shakeBtn) {
+                shakeBtn.addEventListener('click', () => {
+                    updateFortuneData(true);
+                });
+            }
+
+            const refreshFortuneBtn = document.getElementById('refreshFortuneBtn');
+            if (refreshFortuneBtn) {
+                refreshFortuneBtn.addEventListener('click', () => {
+                    updateFortuneData(true);
+                });
+            }
+
+            // 互动按钮
+            if (elements.feedRing) {
+                elements.feedRing.addEventListener('click', feed);
+            }
+            if (elements.drinkRing) {
+                elements.drinkRing.addEventListener('click', drink);
+            }
+            if (elements.sleepRing) {
+                elements.sleepRing.addEventListener('click', handleSleepAction);
+            }
+            
+            // 点击小猪
+            if (elements.pig) {
+                elements.pig.addEventListener('click', (e) => {
+                    if (e.target.closest('.dress-btn')) return;
+                    playWithPig();
+                });
+            }
+
+            // 退出
+            if (elements.exitBtn) {
+                elements.exitBtn.addEventListener('click', () => {
+                    elements.exitModal.classList.add('show');
+                });
+            }
+
+            const cancelExitBtn = document.getElementById('cancelExitBtn');
+            if (cancelExitBtn) {
+                cancelExitBtn.addEventListener('click', () => {
+                    elements.exitModal.classList.remove('show');
+                });
+            }
+
+            const confirmExitBtn = document.getElementById('confirmExitBtn');
+            if (confirmExitBtn) {
+                confirmExitBtn.addEventListener('click', () => {
+                    const closed = window.close();
+                    if (!closed) {
+                        alert('请手动关闭此标签页');
+                    }
+                    elements.exitModal.classList.remove('show');
+                });
+            }
+
+            // 装扮
+            elements.dressBtn.addEventListener('click', () => {
+                elements.dressModal.classList.toggle('show');
+            });
+
+            document.querySelectorAll('.dress-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    state.currentAccessory = option.dataset.accessory;
+                    updateAccessory();
+                    elements.dressModal.classList.remove('show');
+                    
+                    // 更新选中状态
+                    document.querySelectorAll('.dress-option').forEach(o => o.classList.remove('active'));
+                    option.classList.add('active');
+                });
+            });
+
+            // 关闭装扮弹窗点击外部
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.dress-modal') && !e.target.closest('.dress-btn')) {
+                    elements.dressModal.classList.remove('show');
                 }
             });
-            
-            canvas.addEventListener('click', playAction);
-            
-            canvas.addEventListener('mousemove', (e) => {
-                const rect = canvas.getBoundingClientRect();
-                state.mousePos.x = (e.clientX - rect.left) * (CONFIG.CANVAS_SIZE / rect.width);
-                state.mousePos.y = (e.clientY - rect.top) * (CONFIG.CANVAS_SIZE / rect.height);
-                state.isLookingAtMouse = true;
-            });
-            
-            canvas.addEventListener('mouseleave', () => {
-                state.isLookingAtMouse = false;
-            });
-            
-            document.getElementById('fortuneBtn').addEventListener('click', showFortuneModal);
-            
-            document.getElementById('closeModalBtn').addEventListener('click', () => {
-                document.getElementById('fortuneModal').classList.add('hidden');
-            });
-            
-            document.getElementById('fortuneModal').addEventListener('click', (e) => {
-                if (e.target.id === 'fortuneModal') {
-                    document.getElementById('fortuneModal').classList.add('hidden');
-                }
-            });
-            
-            document.getElementById('exitApp').addEventListener('click', () => {
-                if (confirm('确定要退出福运小猪吗？')) {
-                    window.open('', '_self', '');
-                    window.close();
-                    setTimeout(() => {
-                        window.location.href = 'about:blank';
-                        setTimeout(() => window.close(), 100);
-                    }, 100);
-                }
-            });
-            
-            window.addEventListener('beforeunload', persistState);
         }
 
-        // ========== 日期显示 ==========
-        function updateDate() {
-            const now = new Date();
-            const lunarMonths = ['正', '二', '三', '四', '五', '六', '七', '八', '九', '十', '冬', '腊'];
-            const month = lunarMonths[now.getMonth()];
-            document.getElementById('auspiciousText').textContent = 
-                `乙巳年 ${month}月${now.getDate()}日 · 宜纳福`;
-        }
-        updateDate();
-
-        // 启动
-        init();
-    })();
-</script>
+        // ========== 启动 ==========
+        window.addEventListener('load', init);
+    </script>
 </body>
 </html>
